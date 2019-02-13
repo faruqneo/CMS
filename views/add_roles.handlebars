@@ -1,0 +1,22 @@
+{{#if errors}}
+    {{#each errors}}
+        <div class="alert alert-warning">
+        <strong>Warning!</strong> {{msg}}.
+        </div>
+    {{/each}}
+{{/if}}
+
+<h4>Set new roles</h4>
+<form action="/cms/dashboard/roles/new_add" method="POST">
+  <div class="form-group">
+    <label for="title">Title:</label>
+    <input type="text" class="form-control" name="title">
+  </div>
+    <div class="form-group">
+    <label for="description">Description:</label>
+    <textarea class="form-control" rows="5" name="description" style="resize: none;"></textarea>
+    </div>
+
+  <button type="submit" class="btn btn-primary">Submit</button>
+  <a href="/cms/dashboard/roles"><button type="button" class="btn btn-light">Back</button></a>
+</form>

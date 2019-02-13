@@ -1,0 +1,28 @@
+
+
+
+
+  
+      
+     <h2>Roles <a href="/cms/dashboard/roles/add"><i class="fas fa-plus-circle"></i></a></h2>        
+      <div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              
+              <th>Title</th>
+              <th>Description</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="myTable">
+              {{#each roles}}
+              <tr>
+              <td>{{title}}</td>
+              <td>{{description}}</td>
+              <td><a href="/cms/dashboard/roles/edit/{{id}}"><button type="button" class="btn btn-primary">Edit</button></a></td>
+              </tr>
+              {{/each}}
+          </tbody>
+        </table>
+      </div>
