@@ -15,7 +15,7 @@ exports.logout = (req, res) => {
 };
 
 exports.ensureAthenticated = (req, res, next) => {
-     if(req.isAuthenticated){
+     if(req.isAuthenticated()){
         return next();
     }
     res.redirect('/cms')
