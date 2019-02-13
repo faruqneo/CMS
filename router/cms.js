@@ -6,12 +6,13 @@ router.get('/', (req, res) => {
     res.render('home',{layout: false})
 })
 
+router.post('/login', authController.login)
+
 router.get('/dashboard', authController.ensureAthenticated, (req, res) => {
     res.render('dashboard')
 })
 
 router.get('/logout', authController.ensureAthenticated, authController.logout)
 
-router.post('/login', authController.login)
 
 module.exports = router

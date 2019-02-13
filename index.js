@@ -3,6 +3,8 @@ const exphbs = require('express-handlebars')
 const mongoose = require('mongoose')
 const session = require('express-session')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
+const flash = require('connect-flash')
 const expressValidator = require('express-validator')
 const path = require('path')
 const config = require('./config/database')
@@ -17,7 +19,7 @@ mongoose.connect(config.database, { useNewUrlParser: true });
 let db = mongoose.connection;
 
 //checking for connection
-db.once('open', function(req, res){
+db.once('open', function(){
     console.log("connected with mongodb")
 });
 
@@ -48,6 +50,9 @@ app.use(passport.session());
 app.use(require('connect-flash')());
 app.use(function (req, res, next) {
   res.locals.messages = require('express-messages')(req, res);
+  res.locals.success_msg = req.flash('success_msg');
+  res.locals.error_msg = req.flash('error_msg');
+  res.locals.error = req.flash('error');
   next();
 });
 
@@ -71,7 +76,6 @@ app.use(expressValidator({
 
 //Passport config
 require('./config/passport')(passport)
-
 
 //router path
 app.use('/cms', cms)
