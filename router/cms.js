@@ -1,26 +1,17 @@
 const express = require('express')
 const router = express.Router()
-const passport = require('passport')
+const authController = require('../controllers/authController')
 
 router.get('/', (req, res) => {
     res.render('home',{layout: false})
 })
 
-router.get('/success', (req, res) => {
+router.get('/dashboard', authController.ensureAthenticated, (req, res) => {
     res.render('dashboard')
 })
 
-router.get('/logout', function(req, res){
-    req.logout();
-    res.redirect('/cms');
-})
+router.get('/logout', authController.ensureAthenticated, authController.logout)
 
-router.post('/login',
-    passport.authenticate('local',{
-        successRedirect: '/cms/success',
-        failureRedirect: '/cms',
-        failureFlash: 'false'
-    })
-)
+router.post('/login', authController.login)
 
 module.exports = router

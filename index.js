@@ -7,7 +7,7 @@ const expressValidator = require('express-validator')
 const path = require('path')
 const config = require('./config/database')
 const passport = require('passport')
-
+const cms = require('./router/cms')
 
 //Init app
 const app = express()
@@ -40,6 +40,9 @@ app.use(session({
     saveUninitialized: false,
     resave: false
 }));
+//Password middelware
+app.use(passport.initialize());
+app.use(passport.session());
 
 //express messages middleware
 app.use(require('connect-flash')());
@@ -68,12 +71,10 @@ app.use(expressValidator({
 
 //Passport config
 require('./config/passport')(passport)
-//Password middelware
-app.use(passport.initialize());
-app.use(passport.session());
+
 
 //router path
-app.use('/cms', require('./router/cms'))
+app.use('/cms', cms)
 
 //server is listening
 app.listen('3000', () => {
