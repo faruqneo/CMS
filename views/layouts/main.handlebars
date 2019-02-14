@@ -7,7 +7,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <title>CMS</title>
     <!-- Bootstrap core CSS -->
-<link href="https://getbootstrap.com/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-PDle/QlgIONtM1aqA2Qemk5gPOE7wFq8+Em+G/hmo5Iq0CCmYZLv3fVRDJ4MMwEA" crossorigin="anonymous">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet">
 <script>
 $(document).ready(function(){
   $("#myInput").on("keyup", function() {
@@ -44,7 +44,7 @@ $(document).ready(function(){
   <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" id="myInput">
   <ul class="navbar-nav px-3">
     <li class="nav-item text-nowrap">
-      <a class="nav-link" href="/cms/logout">Sign out</a>
+      <a class="nav-link" href="/cms/logout"><i class="fas fa-user-tie"></i>  Sign out</a>
     </li>
   </ul>
 </nav>
@@ -57,19 +57,19 @@ $(document).ready(function(){
           <li class="nav-item">
             <a class="nav-link" href="/cms/dashboard">
               <span data-feather="file"></span>
-              Manage Members
+              <i class="fas fa-users"></i> Manage Members
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/cms/dashboard/passwords">
               <span data-feather="shopping-cart"></span>
-              Manage Passwords
+              <i class="fas fa-key"></i> Manage Passwords
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/cms/dashboard/roles">
               <span data-feather="users"></span>
-              Manage Roles
+              <i class="fas fa-user-tag"></i> Manage Roles
             </a>
           </li>
         </ul>

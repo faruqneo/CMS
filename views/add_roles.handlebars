@@ -6,6 +6,12 @@
     {{/each}}
 {{/if}}
 
+{{#if success}}
+        <div class="alert alert-warning">
+        <strong>Warning!</strong> {{success}}.
+        </div>
+{{/if}}
+
 <h4>Set new roles</h4>
 <form action="/cms/dashboard/roles/new_add" method="POST">
   <div class="form-group">
