@@ -8,6 +8,14 @@ let RoleSchema = mongoose.Schema({
     description:{
         type: String,
         require: true
+    },
+    createdAt:{
+        type: Date,
+        default: Date.now
+    },
+    updatedAT:{
+        type: Date,
+        default: Date.now
     }
 });
 

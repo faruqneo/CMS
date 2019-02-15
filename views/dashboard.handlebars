@@ -13,6 +13,7 @@
       </div>
 
       <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas> --}}
+
       <h2>Members <a href="/cms/dashboard/members/add"><i class="fas fa-plus-circle"></i></a></h2>
       <div class="table-responsive">
         <table class="table table-striped table-sm">
@@ -26,14 +27,43 @@
             </tr>
           </thead>
           <tbody id="myTable">
+            {{#each member}}
             <tr>
-              <td>1,001</td>
-              <td>Lorem</td>
-              <td>ipsum@gmail.com</td>
-              <td>dolor</td>
-              <td><button type="button" class="btn btn-primary">Edit</button>
-              <button type="button" class="btn btn-danger">Delete</button></td>
+              <td>{{math @index "+" 1}}</td>
+              <td>{{name}}</td>
+              <td>{{email}}</td>
+              <td>{{role}}</td>
+              <td><a href="/cms/dashboard/members/edit/{{id}}"><button type="button" class="btn btn-primary">Edit</button></a>
+              <a href="/cms/dashboard/memebers/delete/{{id}}"><button type="button" class="btn btn-danger">Delete</button></a></td>
             </tr>
+            {{/each}}
           </tbody>
         </table>
+      {{#if (gt pages 0)}}
+        <ul class="pagination text-center">
+          {{#if (eq current 1)}}
+          <li class="page-item disabled"><a class="page-link" href="/cms/dashboard/:1">First</a></li>
+          {{else}}
+          <li class="page-item"><a class="page-link" href="/cms/dashboard/:1">First</a></li>
+          {{/if}}
+          {{#if (eq i current)}}
+          <li class="page-item disabled"><a class="page-link" href="#">.....</a></li>
+          {{/if}}
+          {{#each (and (lte i (math current "+" 4)) (lte i pages))}}
+            {{#if (eq i current)}}
+            <li class="page-item active"><a class="page-link" href="#">{{i}}</a></li>
+            {{else}}
+            <li class="page-item"><a class="page-link" href="/cms/dashboard/{{i}}">{{i}}</a></li>
+            {{/if}}
+            {{#if (and (eq i (math current "+" 4)) (lt i pages))}}
+            <li class="page-item disabled"><a class="page-link" href="#">.....</a></li>
+            {{/if}}
+          {{/each}}
+          {{#if (eq current pages)}}
+          <li class="page-item disabled"><a class="page-link" href="#">Last</a></li>
+          {{else}}
+          <li class="page-item"><a class="page-link" href="/cms/dashboard/{{pages}}">Last</a></li>
+          {{/if}}
+      </ul>
+    {{/if}}
       </div>

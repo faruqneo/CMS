@@ -1,5 +1,10 @@
 const Roles = require('../model/role')
 
+//adding new roles form page
+exports.addForm = (req, res) => {
+    res.render('add_roles')
+}
+
 //adding new roles
 exports.addNew = (req, res) => {
     req.checkBody('title', 'Title is required').notEmpty();

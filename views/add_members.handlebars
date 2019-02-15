@@ -1,18 +1,34 @@
+{{#if errors}}
+    {{#each errors}}
+        <div class="alert alert-warning">
+        <strong>Warning!</strong> {{msg}}.
+        </div>
+    {{/each}}
+{{/if}}
 
+{{#if success_msg}}
+        <div class="alert alert-warning">
+        <strong>Warning!</strong> {{success_msg}}.
+        </div>
+{{/if}}
 
 <h4>Add new members</h4>
-<form action="" method="POST">
+<form action="/cms/dashboard/members/new_add" method="POST">
   <div class="form-group">
     <label for="name">Name:</label>
     <input type="text" class="form-control" name="name">
   </div>
     <div class="form-group">
     <label for="email">Email:</label>
-    <input type="text" class="form-control" name="email">
+    <input type="email" class="form-control" name="email">
   </div>
   <div class="form-group">
-    <label for="role">Role:</label>
-    <input type="text" class="form-control" name="role">
+    <label for="sel1">Role:</label>
+    <select class="custom-select" name="role">
+      {{#each roles}}
+        <option value={{title}}>{{title}}</option>
+      {{/each}}
+    </select>
   </div>
   <div class="form-group">
     <label for="name">Password:</label>

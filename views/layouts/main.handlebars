@@ -4,10 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <title>CMS</title>
     <!-- Bootstrap core CSS -->
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet">
+<link href="/public/css/bootstrap-tagsinput.css" rel="stylesheet">
+<script src="/public/script/bootstrap-tagsinput.js"></script>
 <script>
 $(document).ready(function(){
   $("#myInput").on("keyup", function() {
@@ -55,7 +57,7 @@ $(document).ready(function(){
       <div class="sidebar-sticky">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" href="/cms/dashboard">
+            <a class="nav-link" href='/cms/dashboard/:1'>
               <span data-feather="file"></span>
               <i class="fas fa-users"></i> Manage Members
             </a>
