@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const session = require('express-session')
 const bodyParser = require('body-parser')
 const expressValidator = require('express-validator')
+const dotenv = require('dotenv').config();
 const path = require('path')
 const config = require('./config/database')
 const passport = require('passport')
