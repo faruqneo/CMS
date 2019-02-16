@@ -5,7 +5,7 @@ const membersController = require('../controllers/memberController')
 const passwordController = require('../controllers/passwordController')
 const router = express.Router()
 
-//Home Index page
+//Index page
 router.get('/', (req, res) => {
     res.render('home',{layout: false})
 })
@@ -21,21 +21,21 @@ router.get('/dashboard/members/edit/:id', authController.ensureAthenticated, mem
 router.post('/dashboard/update/members/:id', authController.ensureAthenticated, membersController.membersUpdate)
 router.get('/dashboard/memebers/delete/:id', authController.ensureAthenticated, membersController.membersDelete)
 
-//Password router
-router.get('/dashboard/passwords', authController.ensureAthenticated, passwordController.passwordList)
+//Password routers
+router.get('/dashboard/passwords/list', authController.ensureAthenticated, passwordController.passwordList)
 router.get('/dashboard/password/add', authController.ensureAthenticated, passwordController.addPassword)
 router.post('/dashboard/passwords/new_add', authController.ensureAthenticated, passwordController.addNew)
 
 
-//role routers
-router.get('/dashboard/roles', authController.ensureAthenticated, rolesController.rolesList)
+//Role routers
+router.get('/dashboard/roles/list', authController.ensureAthenticated, rolesController.rolesList)
 router.get('/dashboard/roles/add', authController.ensureAthenticated, rolesController.addForm)
 router.post('/dashboard/roles/new_add', authController.ensureAthenticated, rolesController.addNew)
 router.get('/dashboard/roles/edit/:id', authController.ensureAthenticated, rolesController.rolesView)
 router.post('/dashboard/update/roles/:id', authController.ensureAthenticated, rolesController.rolesUpdate)
 router.get('/dashboard/roles/delete/:id', authController.ensureAthenticated, rolesController.rolesDelete)
 
-//logout routes
+//logout router
 router.get('/logout', authController.ensureAthenticated, authController.logout)
 
 

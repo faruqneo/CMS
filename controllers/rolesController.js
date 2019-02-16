@@ -1,4 +1,5 @@
 const Roles = require('../model/role')
+const moment = require('moment');
 
 //adding new roles form page
 exports.addForm = (req, res) => {
@@ -32,7 +33,7 @@ exports.addNew = (req, res) => {
             else
             {
                 req.flash('success', 'Role Added')
-                res.redirect('/cms/dashboard/roles')
+                res.redirect('/cms/dashboard/roles/list')
             }
         });
     }
@@ -78,6 +79,7 @@ exports.rolesUpdate = (req, res) => {
     else
     {
         let roles = req.body;
+        roles.updatedAT = moment().format();
         let id = {_id:req.params.id}
         //console.log(req.params.id)
         Roles.updateOne(id, roles,function(err){
@@ -88,7 +90,7 @@ exports.rolesUpdate = (req, res) => {
             else
             {
                 req.flash('success', 'Role Update')
-                res.redirect('/cms/dashboard/roles')
+                res.redirect('/cms/dashboard/roles/list')
             }
         })
     }
@@ -105,7 +107,7 @@ exports.rolesDelete = (req, res) => {
         else
         {
             req.flash('success', 'Role Deleted')
-            res.redirect('/cms/dashboard/roles')
+            res.redirect('/cms/dashboard/roles/list')
         }
     })
 }

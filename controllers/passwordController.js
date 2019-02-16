@@ -49,19 +49,19 @@ exports.addNew = (req, res) => {
         password.website = req.body.name;
         password.login = req.body.email;
         password.role = req.body.role;
-        password.username = req.body.password;
+        password.username = req.body.username;
         password.password = req.body.password;
-        res.json(password)
-        // password.save(function(err){
-        //     if(err)
-        //     {
-        //         console.log(err)
-        //     }
-        //     else
-        //     {
-        //         req.flash('success_msg', 'Password Added')
-        //         res.redirect('/cms/dashboard/passwords')
-        //     }
-        // });
+        //res.json(password)
+        password.save(function(err){
+            if(err)
+            {
+                console.log(err)
+            }
+            else
+            {
+                req.flash('success_msg', 'Password Added')
+                res.redirect('/cms/dashboard/passwords')
+            }
+        });
     }
 }

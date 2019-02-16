@@ -1,5 +1,6 @@
 const Member = require('../model/member')
 const Role = require('../model/role')
+const moment = require('moment');
 
 
 exports.addMember = (req, res) => {
@@ -44,7 +45,7 @@ exports.addNew = (req, res) => {
             else
             {
                 req.flash('success_msg', 'Member Added')
-                res.redirect('/cms/dashboard')
+                res.redirect('/cms/dashboard/:page')
             }
         });
     }
@@ -52,11 +53,12 @@ exports.addNew = (req, res) => {
 
 //list view for member
 exports.memberList = (req, res) => {
-    var i = page > 5 ? page - 4 : 1;
+    var i = (page > 5) ? (page - 4) : 1;
     var perPage = 10
     var page = req.params.page || 1
     Member
     .find({})
+    .sort('createdAt')
     .skip((perPage * page) - perPage)
     .limit(perPage)
     .exec(function(err, member) {
@@ -140,6 +142,7 @@ exports.membersUpdate = (req, res) => {
     else
     {
         let members = req.body;
+        members.updatedAT = moment().format();
         let id = {_id:req.params.id}
         //console.log(req.params.id)
         Member.updateOne(id, members,function(err){
@@ -150,7 +153,7 @@ exports.membersUpdate = (req, res) => {
             else
             {
                 req.flash('success', 'Member Update')
-                res.redirect('/cms/dashboard')
+                res.redirect('/cms/dashboard/:page')
             }
         })
     }
@@ -167,7 +170,7 @@ exports.membersDelete = (req, res) => {
         else
         {
             req.flash('success', 'Member Deleted')
-            res.redirect('/cms/dashboard')
+            res.redirect('/cms/dashboard/1')
         }
     })
 }

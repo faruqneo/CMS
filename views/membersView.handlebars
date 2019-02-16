@@ -5,7 +5,7 @@
         </div>
     {{/each}}
 {{/if}}
-
+<br>
 <h2>Update Members</h2>   
 <form action="/cms/dashboard/update/members/{{members.id}}" method="POST">
     <div class="form-group">
@@ -18,11 +18,13 @@
   </div>
   <div class="form-group">
     <label for="sel1">Role:</label>
-    <select class="custom-select" name="role">
-        {{!-- <option value={{members.role}} selected>{{members.role}}</option> --}}
-      {{#each roles}}
-        <option value={{title}}>{{title}}</option>
-      {{/each}}
+    <select class="custom-select" name="role" id="exist">
+        <option value={{members.role}} selected>{{members.role}}</option>
+    </select>
+    <select class="custom-select" name="role" id="new" style="display: none;">
+    {{#each roles}}
+      <option value={{title}}>{{title}}</option>
+    {{/each}}
     </select>
   </div>
   <div class="form-group">
@@ -30,5 +32,15 @@
     <input type="text" class="form-control" name="password" value="{{members.password}}">
   </div>
   <button type="submit" class="btn btn-primary">submit</button>
-  <a href="/cms/dashboard"><button type="button" class="btn btn-default">back</button></a>
+  <a href="/cms/dashboard/1"><button type="button" class="btn btn-default">back</button></a>
 </form>
+
+<script>
+$(document).ready(function(){
+  $('#exist').focus(function(){
+    $('#new').show();
+    $('#exist').hide();
+  });
+
+});
+</script>

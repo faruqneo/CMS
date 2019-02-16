@@ -57,19 +57,19 @@ $(document).ready(function(){
       <div class="sidebar-sticky">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" href='/cms/dashboard/:1'>
+            <a class="nav-link" href='/cms/dashboard/1'>
               <span data-feather="file"></span>
               <i class="fas fa-users"></i> Manage Members
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/cms/dashboard/passwords">
+            <a class="nav-link" href="/cms/dashboard/passwords/list">
               <span data-feather="shopping-cart"></span>
               <i class="fas fa-key"></i> Manage Passwords
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/cms/dashboard/roles">
+            <a class="nav-link" href="/cms/dashboard/roles/list">
               <span data-feather="users"></span>
               <i class="fas fa-user-tag"></i> Manage Roles
             </a>
@@ -123,7 +123,6 @@ $(document).ready(function(){
     </nav>
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-     <br><br>
       {{{body}}}
     </main>
   </div>

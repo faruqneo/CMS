@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Roles = require('./role')
+const moment = require('moment');
 
 const PasswordSchema = mongoose.Schema({
     website:{
@@ -10,10 +11,10 @@ const PasswordSchema = mongoose.Schema({
         type: String,
         require: true
     },
-    role:[{
-        type: mongoose.Schema.Types.ObjectId,
+    role:{
+        type: mongoose.Schema.Types.String,
         ref: Roles
-    }],
+    },
     username:{
         type: String,
         require: true
@@ -21,6 +22,14 @@ const PasswordSchema = mongoose.Schema({
     password:{
         type: String,
         require: true
+    },
+    createdAt:{
+        type: Date,
+        default: moment().format()
+    },
+    updatedAT:{
+        type: Date,
+        default: moment().format()
     }
 })
 
