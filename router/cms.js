@@ -29,7 +29,6 @@ router.get('/dashboard/password/edit/:id', authController.ensureAthenticated, pa
 router.post('/dashboard/update/passwords/:id', authController.ensureAthenticated, passwordController.passwordsUpdate)
 router.get('/dashboard/password/delete/:id', authController.ensureAthenticated, passwordController.passwordsDelete)
 
-
 //Role routers
 router.get('/dashboard/roles/list', authController.ensureAthenticated, rolesController.rolesList)
 router.get('/dashboard/roles/add', authController.ensureAthenticated, rolesController.addForm)
@@ -40,6 +39,5 @@ router.get('/dashboard/roles/delete/:id', authController.ensureAthenticated, rol
 
 //logout router
 router.get('/logout', authController.ensureAthenticated, authController.logout)
-
 
 module.exports = router

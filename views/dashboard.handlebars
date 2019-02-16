@@ -1,18 +1,4 @@
-{{!-- <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Dashboard</h1>
-        <div class="btn-toolbar mb-2 mb-md-0">
-          <div class="btn-group mr-2">
-            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-          </div>
-          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-            <span data-feather="calendar"></span>
-            This week
-          </button>
-        </div>
-      </div>
 
-      <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas> --}}
 
       <h2>Members <a href="/cms/dashboard/members/add"><i class="fas fa-plus-circle"></i></a></h2>
       <div class="table-responsive">
@@ -39,31 +25,9 @@
             {{/each}}
           </tbody>
         </table>
-      {{#if (gt pages 0)}}
-        <ul class="pagination text-center">
-          {{#if (eq current 1)}}
-          <li class="page-item disabled"><a class="page-link" href="/cms/dashboard/1">First</a></li>
-          {{else}}
-          <li class="page-item"><a class="page-link" href="/cms/dashboard/1">First</a></li>
-          {{/if}}
-          {{#if (eq i current)}}
-          <li class="page-item disabled"><a class="page-link" href="#">.....</a></li>
-          {{/if}}
-          {{#each (and (lte i (math current "+" 4)) (lte i pages))}}
-            {{#if (eq i current)}}
-            <li class="page-item active"><a class="page-link" href="#">{{i}}</a></li>
-            {{else}}
-            <li class="page-item"><a class="page-link" href="/cms/dashboard/{{i}}">{{i}}</a></li>
-            {{/if}}
-            {{#if (and (eq i (math current "+" 4)) (lt i pages))}}
-            <li class="page-item disabled"><a class="page-link" href="#">.....</a></li>
-            {{/if}}
-          {{/each}}
-          {{#if (eq current pages)}}
-          <li class="page-item disabled"><a class="page-link" href="#">Last</a></li>
-          {{else}}
-          <li class="page-item"><a class="page-link" href="/cms/dashboard/{{pages}}">Last</a></li>
-          {{/if}}
+      <ul class="pagination">
+        {{#each pages}}
+          <li class="page-item"><a class="page-link" href="/cms/dashboard/{{this}}">{{this}}</a></li>
+        {{/each}}
       </ul>
-    {{/if}}
       </div>

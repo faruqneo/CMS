@@ -23,6 +23,7 @@
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "express-handlebars": "^3.0.0",
+    "express-handlebars-paginate": "^1.0.3",
     "express-messages": "^1.0.1",
     "express-session": "^1.15.6",
     "express-validator": "^5.3.1",

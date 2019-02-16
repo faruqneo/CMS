@@ -45,7 +45,7 @@ exports.addNew = (req, res) => {
             else
             {
                 req.flash('success_msg', 'Member Added')
-                res.redirect('/cms/dashboard/:page')
+                res.redirect('/cms/dashboard/:')
             }
         });
     }
@@ -53,9 +53,10 @@ exports.addNew = (req, res) => {
 
 //list view for member
 exports.memberList = (req, res) => {
-    var i = (page > 5) ? (page - 4) : 1;
     var perPage = 10
     var page = req.params.page || 1
+   // var i = parseInt(page > 5) ? parseInt(page - 4) : 1
+   
     Member
     .find({})
     .sort('createdAt')
@@ -63,39 +64,19 @@ exports.memberList = (req, res) => {
     .limit(perPage)
     .exec(function(err, member) {
         Member.countDocuments().exec(function(err, count) {
+
+            let pages = [];
+            for(let i=1; i<= Math.ceil(count / perPage); i++)
+                {
+                        pages.push(i)
+                }
+               
             if (err) return next(err)
             res.render('dashboard', {
                 member: member,
-                current: page,
-                i,
-                pages: Math.ceil(count / perPage),
-                helpers: {
-                    eq: function (v1, v2) {
-                        return v1 === v2;
-                    },
-                    ne: function (v1, v2) {
-                        return v1 !== v2;
-                    },
-                    lt: function (v1, v2) {
-                        return v1 < v2;
-                    },
-                    gt: function (v1, v2) {
-                        return v1 > v2;
-                    },
-                    lte: function (v1, v2) {
-                        return v1 <= v2;
-                    },
-                    gte: function (v1, v2) {
-                        return v1 >= v2;
-                    },
-                    and: function (v1, v2) {
-                        return v1 && v2;
-                    },
-                    or: function (v1, v2) {
-                        return v1 || v2;
-                    }
-                }
+                pages
             })
+            
         })
     })
 
