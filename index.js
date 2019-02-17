@@ -92,6 +92,10 @@ require('./config/passport')(passport)
 //router path
 app.use('/cms', cms)
 
+app.use('/', (req, res) => {
+    res.send('Hello world')
+})
+
 //checking for user
 app.get('*', function(req, res, next){
     res.locals.user = req.user || null ;
