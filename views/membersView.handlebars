@@ -19,7 +19,7 @@
   <div class="form-group">
     <label for="sel1">Role:</label>
     <select class="custom-select" name="role" id="exist">
-        <option value={{members.role}} selected>{{members.role}}</option>
+        <option value={{members.role}}>{{members.role}}</option>
     </select>
     <select class="custom-select" name="role" id="new" style="display: none;">
     {{#each roles}}
@@ -39,8 +39,7 @@
 $(document).ready(function(){
   $('#exist').focus(function(){
     $('#new').show();
-    $('#exist').hide();
+    $('#exist').remove();
   });
-
 });
 </script>

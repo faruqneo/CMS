@@ -3,6 +3,9 @@ const exphbs = require('express-handlebars')
 const mongoose = require('mongoose')
 const session = require('express-session')
 const bodyParser = require('body-parser')
+const dotenv = require('dotenv').config()
+const SlackBots = require('slackbots')
+const axios = require('axios')
 const expressValidator = require('express-validator')
 const path = require('path')
 const config = require('./config/database')
@@ -94,6 +97,31 @@ app.get('*', function(req, res, next){
     res.locals.user = req.user || null ;
     next();
 })
+
+//create a bot
+const bot = new SlackBots({
+    token: process.env.slack_bot_token,
+    name: 'punto'
+});
+
+bot.on('start', () => {
+    bot.postMessageToChannel('general', 'Hii')
+})
+
+bot.on('error', (err) => console.log(err))
+
+bot.on('message', (data) => {
+    if(data.type !== 'message')
+    {
+        return;
+    }
+    handleMessage(data.text)
+})
+
+function handleMessage(message)
+{
+    console.log(message)
+}
 
 //server is listening
 app.listen('3000', () => {

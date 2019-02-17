@@ -117,8 +117,11 @@ exports.membersUpdate = (req, res) => {
     
     if(errors)
     {
-        res.render('membersView',{
-            errors
+        Role.find({},function(err, roles){
+            res.render('add_members',{
+                errors,
+                roles
+            })      
         }); 
     }
     else
@@ -135,7 +138,7 @@ exports.membersUpdate = (req, res) => {
             else
             {
                 req.flash('success', 'Member Update')
-                res.redirect('/cms/dashboard/:page')
+                res.redirect('/cms/dashboard/1')
             }
         })
     }
