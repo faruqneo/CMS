@@ -4,8 +4,8 @@ const mongoose = require('mongoose')
 const session = require('express-session')
 const bodyParser = require('body-parser')
 const expressValidator = require('express-validator')
-const paginateHelper = require('express-handlebars-paginate');
-const dotenv = require('dotenv').config();
+const moment = require('moment')
+const dotenv = require('dotenv').config()
 const path = require('path')
 const config = require('./config/database')
 const passport = require('passport')
@@ -45,9 +45,8 @@ helpers:{
             "/": lvalue / rvalue,
             "%": lvalue % rvalue
         }[operator];
-    },
+    }
 }}));
-// exphbs.handlebars.registerHelper('paginateHelper', paginateHelper.createPagination);
 
 app.set('view engine', 'handlebars');
 

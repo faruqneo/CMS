@@ -74,7 +74,8 @@ exports.memberList = (req, res) => {
             if (err) return next(err)
             res.render('dashboard', {
                 member: member,
-                pages
+                pages,
+                last: Math.ceil(count / perPage)
             })
             
         })
