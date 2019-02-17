@@ -9,7 +9,8 @@
               <th>Name</th>
               <th>Email</th>
               <th>Role</th>
-              <th>Action</th>
+              <th>Edit</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody id="myTable">
@@ -19,8 +20,8 @@
               <td>{{name}}</td>
               <td>{{email}}</td>
               <td>{{role}}</td>
-              <td><a href="/cms/dashboard/members/edit/{{id}}"><button type="button" class="btn btn-primary">Edit</button></a>
-              <a href="/cms/dashboard/memebers/delete/{{id}}"><button type="button" class="btn btn-danger">Delete</button></a></td>
+              <td><a href="/cms/dashboard/members/edit/{{id}}" class="text-success"><i class="fas fa-edit"></i></a></td>
+              <td><a href="/cms/dashboard/memebers/delete/{{id}}" class="text-danger"><i class="fas fa-trash-alt"></i></a></td>
             </tr>
             {{/each}}
           </tbody>

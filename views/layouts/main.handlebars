@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js"></script>
     <title>CMS</title>
     <!-- Bootstrap core CSS -->
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet">
@@ -16,12 +17,23 @@ $(document).ready(function(){
     var value = $(this).val().toLowerCase();
     $("#myTable tr").filter(function() {
       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+      $('.pagination').hide()
     });
   });
+
+   
 });
 </script>
 
     <style>
+      #catalog{
+        margin: 0px 0px 0px 891px;
+        transform: translateY(147%);
+      }
+    .far{
+         margin: 0px 0px 0px 872px;
+        transform: translateY(366%);
+    }
       .bd-placeholder-img {
         font-size: 1.125rem;
         text-anchor: middle;
@@ -40,7 +52,7 @@ $(document).ready(function(){
     <!-- Custom styles for this template -->
     <link href="/public/css/dashboard.css" rel="stylesheet">
   </head>
-  <body>
+  <body onload="startTime()">
     <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
   <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#"> Marmeto</a>
   <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" id="myInput">
@@ -123,9 +135,21 @@ $(document).ready(function(){
       </div>
     </nav>
 
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <main role="main" class="col-md-5 ml-sm-auto col-lg-10">
+      <i class="far fa-calendar-alt"></i><div id="catalog"></div>
       {{{body}}}
     </main>
   </div>
 </div>
 
+<script type="text/javascript">
+(function startTime()
+{
+  var NowMoment = moment().format('MMMM Do YYYY, h:mm:ss a');
+  
+  var eDisplayMoment = document.getElementById('catalog');
+  eDisplayMoment.innerHTML = NowMoment;
+
+  setTimeout(startTime, 1000);
+})();
+</script>

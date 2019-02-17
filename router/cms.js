@@ -1,9 +1,16 @@
 const express = require('express')
+const moment = require('moment')
 const authController = require('../controllers/authController')
 const rolesController = require('../controllers/rolesController')
 const membersController = require('../controllers/memberController')
 const passwordController = require('../controllers/passwordController')
 const router = express.Router()
+
+// Catalog for the routers
+router.use(function timeLog (req, res, next) {
+    console.log('Catalog:', moment().format('MMMM Do YYYY, h:mm:ss a'))
+    next()
+})
 
 //Index page
 router.get('/', (req, res) => {

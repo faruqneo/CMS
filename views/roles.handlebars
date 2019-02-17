@@ -8,7 +8,8 @@
               <th>#</th>
               <th>Title</th>
               <th>Description</th>
-              <th>Action</th>
+              <th>Edit</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody id="myTable">
@@ -17,8 +18,8 @@
               <td>{{math @index "+" 1}}</td>
               <td>{{title}}</td>
               <td>{{description}}</td>
-              <td><a href="/cms/dashboard/roles/edit/{{id}}"><button type="button" class="btn btn-primary">Edit</button></a>
-              <a href="/cms/dashboard/roles/delete/{{id}}"><button type="button" class="btn btn-danger">Delete</button></a></td>
+              <td><a href="/cms/dashboard/roles/edit/{{id}}" class="text-success"><i class="fas fa-edit"></i></a></td>
+              <td><a href="/cms/dashboard/roles/delete/{{id}}" class="text-danger"><i class="fas fa-trash-alt"></i></a></td>
               </tr>
               {{/each}}
           </tbody>

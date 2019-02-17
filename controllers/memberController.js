@@ -53,7 +53,7 @@ exports.addNew = (req, res) => {
 
 //list view for member
 exports.memberList = (req, res) => {
-    var perPage = 10
+    var perPage = 14
     var page = req.params.page || 1
    // var i = parseInt(page > 5) ? parseInt(page - 4) : 1
    
