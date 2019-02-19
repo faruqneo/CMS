@@ -35,6 +35,7 @@ router.post('/dashboard/passwords/new_add', authController.ensureAthenticated, p
 router.get('/dashboard/password/edit/:id', authController.ensureAthenticated, passwordController.passwordsView)
 router.post('/dashboard/update/passwords/:id', authController.ensureAthenticated, passwordController.passwordsUpdate)
 router.get('/dashboard/password/delete/:id', authController.ensureAthenticated, passwordController.passwordsDelete)
+router.get('/password/website', passwordController.passwordSite)
 
 //Role routers
 router.get('/dashboard/roles/list', authController.ensureAthenticated, rolesController.rolesList)

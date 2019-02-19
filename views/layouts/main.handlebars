@@ -114,7 +114,7 @@ $(document).ready(function(){
     <!-- Custom styles for this template -->
     <link href="/public/css/dashboard.css" rel="stylesheet">
   </head>
-  <body onload="startTime()">
+  <body>
     <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
   <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#"> Marmeto</a>
   <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" id="myInput">
@@ -200,20 +200,8 @@ $(document).ready(function(){
     </nav>
 
     <main role="main" class="col-md-5 ml-sm-auto col-lg-10">
-      <i class="far fa-calendar-alt"></i><div id="catalog"></div>
       {{{body}}}
     </main>
   </div>
 </div>
 
-<script type="text/javascript">
-(function startTime()
-{
-  var NowMoment = moment().format('MMMM Do YYYY, h:mm:ss a');
-  
-  var eDisplayMoment = document.getElementById('catalog');
-  eDisplayMoment.innerHTML = NowMoment;
-
-  setTimeout(startTime, 1000);
-})();
-</script>

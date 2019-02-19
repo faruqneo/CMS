@@ -103,6 +103,7 @@ app.get('*', function(req, res, next){
     next();
 })
 
+
 //create a bot
 const bot = new SlackBots({
     token: process.env.slack_bot_token,
@@ -116,17 +117,20 @@ bot.on('start', () => {
 bot.on('error', (err) => console.log(err))
 
 bot.on('message', (data) => {
+    //console.log(data)
     if(data.type !== 'message')
     {
         return;
     }
-    handleMessage(data.text)
+    console.log(data)
+    bot.postMessage(data.user, 'Hello')
+    // handleMessage(data)  
 })
 
-function handleMessage(message)
-{
-    console.log(message)
-}
+// function handleMessage(message)
+// {
+//     console.log(message.content)
+// }
 
 //server is listening
 app.listen(PORT, () => {
