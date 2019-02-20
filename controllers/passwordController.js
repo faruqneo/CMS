@@ -129,7 +129,7 @@ exports.passwordsDelete = (req, res) => {
     })
 }
 
-//API for slack bot
+//Passwords list api for bot
 exports.passwordSite = (req, res) => {
     Password.find({},function(err, password){
         if(err)

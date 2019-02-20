@@ -27,6 +27,7 @@ router.post('/dashboard/members/new_add', authController.ensureAthenticated, mem
 router.get('/dashboard/members/edit/:id', authController.ensureAthenticated, membersController.membersView)
 router.post('/dashboard/update/members/:id', authController.ensureAthenticated, membersController.membersUpdate)
 router.get('/dashboard/memebers/delete/:id', authController.ensureAthenticated, membersController.membersDelete)
+router.get('/members/name',membersController.userName)
 
 //Password routers
 router.get('/dashboard/passwords/list', authController.ensureAthenticated, passwordController.passwordList)
