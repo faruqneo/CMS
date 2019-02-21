@@ -3,7 +3,6 @@ const exphbs = require('express-handlebars')
 const mongoose = require('mongoose')
 const session = require('express-session')
 const bodyParser = require('body-parser')
-const dotenv = require('dotenv').config()
 const SlackBots = require('slackbots')
 const axios = require('axios')
 const expressValidator = require('express-validator')
@@ -12,6 +11,7 @@ const path = require('path')
 const config = require('./config/database')
 const passport = require('passport')
 const cms = require('./router/cms')
+require('dotenv').config()
 //const PORT = process.env.PORT || 5000
 
 //Init app
@@ -137,69 +137,33 @@ function handleMessage(message)
     bot.getUserById(message.user)
     .then((details) => {
         let slackemail = details.profile.email
-        let member, slackrole
-        let role = []
+        let member = []
+        let slackrole
 
         //getting members list through API
         axios({
-            method:'get',
-            url:'http://localhost:3000/cms/members/name'
-          })
-            .then(function(response) {
-            let data = [];
-            for(let key in response.data)
-                data.push({"name": response.data[key].name,"email": response.data[key].email,"role": response.data[key].role})
-            //console.log(data)
-            member = _.where(data, {email: slackemail})
-            slackrole = member[0].role
-            //console.log(slackrole)
-
-            //getting password list through API for checking members roles
-            axios({
-                method:'get',
-                url:'http://localhost:3000/cms/password/website'
-              })
-                .then(function(response) {
-                //console.log(response.data)
-                for(let j in response.data)
-                {  
-                    //console.log(response.data[j].role)
-                    if(lower.includes('show password') && lower.includes(response.data[j].website))
-                    {
-                        // console.log(response.data[j].website)
-                        let rolearray = response.data[j].role.split(",")
-                       // console.log(rolearray)
-                        for(let i in rolearray)
-                        {   //checking roles either it is valid or admin
-                            if(rolearray[i] == slackrole || slackrole == 'admin')
-                            {
-                                role.push({"website": response.data[j].website,"login": response.data[j].login, "username": response.data[j].username, "password": response.data[j].password})
-                                console.log(rolearray[i]);
-                                console.log(slackrole);
-                                break;
-                            }
-                            else
-                            {
-                                bot.postMessage(message.user, 'You have no privilage.');
-                                break;
-                            }
-                        }
-                        break;
+            method: 'post',
+            url: 'http://localhost:3000/cms/members/name',
+            data: {
+              email: slackemail
+            }
+          }).then((res) => {
+              //console.log(res.data)
+                member.push({"name":res.data.name,"email":res.data.email,"role":res.data.role})
+            
+                slackrole = member[0].role
+                //console.log(slackrole)
+                axios({
+                    method: 'post',
+                    url: 'http://localhost:3000/cms/password/website',
+                    data: {
+                      role: slackrole
                     }
-                    else
-                        {
-                            //console.log(lower)
-                            bot.postMessage(message.user, "This is not right format");
-                            //break;
-                            
-                        }
-                }
-                //console.log(role)
-                bot.postMessage(message.user, "Login_Url: "+role[0].login+"\nUsername: "+role[0].username+"\nPassword: "+role[0].password)
-                //role.pop()
-              })
-              .catch((err) => console.log(err))
-          });
+                  }).then(res => console.log(res))
+                  .catch(err => console.log(err))
+
+            })
+          .catch(err => console.log(err))
     })
     .catch(error => console.log(error))
 }

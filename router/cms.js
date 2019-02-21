@@ -27,7 +27,7 @@ router.post('/dashboard/members/new_add', authController.ensureAthenticated, mem
 router.get('/dashboard/members/edit/:id', authController.ensureAthenticated, membersController.membersView)
 router.post('/dashboard/update/members/:id', authController.ensureAthenticated, membersController.membersUpdate)
 router.get('/dashboard/memebers/delete/:id', authController.ensureAthenticated, membersController.membersDelete)
-router.get('/members/name',membersController.userName)
+router.post('/members/name',membersController.userName)
 
 //Password routers
 router.get('/dashboard/passwords/list', authController.ensureAthenticated, passwordController.passwordList)
@@ -36,7 +36,7 @@ router.post('/dashboard/passwords/new_add', authController.ensureAthenticated, p
 router.get('/dashboard/password/edit/:id', authController.ensureAthenticated, passwordController.passwordsView)
 router.post('/dashboard/update/passwords/:id', authController.ensureAthenticated, passwordController.passwordsUpdate)
 router.get('/dashboard/password/delete/:id', authController.ensureAthenticated, passwordController.passwordsDelete)
-router.get('/password/website', passwordController.passwordSite)
+router.post('/password/website', passwordController.passwordSite)
 
 //Role routers
 router.get('/dashboard/roles/list', authController.ensureAthenticated, rolesController.rolesList)

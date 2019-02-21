@@ -131,14 +131,9 @@ exports.passwordsDelete = (req, res) => {
 
 //Passwords list api for bot
 exports.passwordSite = (req, res) => {
-    Password.find({},function(err, password){
-        if(err)
-        {
-            console.log(err)
-        }
-        else{
-            //console.log(password)
-            res.send(password)
-        }
+    let password = res.body
+    //console.log("test")
+    Password.find(password,function(err, password){
+        res.send(password)
     });
 }

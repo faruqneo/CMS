@@ -162,7 +162,9 @@ exports.membersDelete = (req, res) => {
 
 //Members list api for bot
 exports.userName = (req, res) => {
-        Member.find({},function(err, member){
-        res.send(member)
-    });
+    let member = req.body;
+    Member.findOne(member, function(err, data)
+    {
+        res.send(data)
+    })
 }
