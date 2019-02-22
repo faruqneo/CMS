@@ -12,13 +12,31 @@ router.use(function timeLog (req, res, next) {
     next()
 })
 
+
 //Index page
 router.get('/', (req, res) => {
     res.render('home',{layout: false})
 })
 
+//Index page
+router.post('/save-check', async (req, res) => {
+try {
+    let checkStatus = await res.body.CheckStatus
+    //console.log(checkStatus)
+    if(checkStatus){
+        return({status: true, msg:"Status updated" })
+    }else{
+        return({status: false, msg:"No data found in the api" })
+    }
+} catch (error) {
+    console.log(error)
+}
+        
+})
+
 //Login router
 router.post('/login', authController.login)
+
 
 //Memeber routers
 router.get('/dashboard/:page', authController.ensureAthenticated, membersController.memberList)

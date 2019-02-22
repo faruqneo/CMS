@@ -1,218 +1,226 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.6.14/selectize.min.js"></script>
-    <link rel="stylesheet" 
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" 
-      integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" 
-      crossorigin="anonymous">
-      
-    <title>CMS</title>
-    <!-- Bootstrap core CSS -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<link href="/public/css/bootstrap-tagsinput.css" rel="stylesheet">
-<script src="/public/script/bootstrap-tagsinput.js"></script>
-<!-- Selectize.js -->
- <link href="/public/css/selectize.css" type="text/css" rel="stylesheet">
-<script>
-$(document).ready(function(){
-  $("#myInput").on("keyup", function() {
-    var value = $(this).val().toLowerCase();
-    $("#myTable tr").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-      $('.pagination').hide()
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.7.0/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.6.14/selectize.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+  <title>CMS</title>
+  <!-- Bootstrap core CSS -->
+  <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <link href="/public/css/bootstrap-tagsinput.css" rel="stylesheet">
+  <script src="/public/script/bootstrap-tagsinput.js"></script>
+  <!-- Selectize.js -->
+  <link href="/public/css/selectize.css" type="text/css" rel="stylesheet">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $("#myInput").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#myTable tr").filter(function () {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+          $('.pagination').hide()
+        });
+      });
+
+
     });
-  });
+  </script>
 
-   
-});
-</script>
-
-    <style>
-      .switch {
-        position: relative;
-        display: inline-block;
-        width: 60px;
-        height: 34px;
-      }
-
-      .switch input { 
-        opacity: 0;
-        width: 0;
-        height: 0;
-      }
-
-      .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        -webkit-transition: .4s;
-        transition: .4s;
-      }
-
-      .slider:before {
-        position: absolute;
-        content: "";
-        height: 26px;
-        width: 26px;
-        left: 4px;
-        bottom: 4px;
-        background-color: white;
-        -webkit-transition: .4s;
-        transition: .4s;
-      }
-
-      input:checked + .slider {
-        background-color: #2196F3;
-      }
-
-      input:focus + .slider {
-        box-shadow: 0 0 1px #2196F3;
-      }
-
-      input:checked + .slider:before {
-        -webkit-transform: translateX(26px);
-        -ms-transform: translateX(26px);
-        transform: translateX(26px);
-      }
-
-      /* Rounded sliders */
-      .slider.round {
-        border-radius: 34px;
-      }
-
-      .slider.round:before {
-        border-radius: 50%;
-      }
-      .setting{
-        margin: 452px 20px 0px;
-      }
-      #catalog{
-        margin: 0px 0px 0px 891px;
-        transform: translateY(147%);
-      }
-    .far{
-         margin: 0px 0px 0px 872px;
-        transform: translateY(366%);
+  <style>
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
     }
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    input:checked+.slider {
+      background-color: #2196F3;
+    }
+
+    input:focus+.slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked+.slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 34px;
+    }
+
+    .slider.round:before {
+      border-radius: 50%;
+    }
+
+    .setting {
+      margin: 452px 20px 0px;
+    }
+
+    #catalog {
+      margin: 0px 0px 0px 891px;
+      transform: translateY(147%);
+    }
+
+    .far {
+      margin: 0px 0px 0px 872px;
+      transform: translateY(366%);
+    }
+
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+      margin: 0px 63px;
+    transform: translateY(1000%);
+    }
+
+    .switch input {
+      display: none;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    input:checked+.slider {
+      background-color: #2196F3;
+    }
+
+    input:focus+.slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked+.slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
       }
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
+    }
+  </style>
+  <!-- Custom styles for this template -->
+  <link href="/public/css/dashboard.css" rel="stylesheet">
+</head>
 
-.switch input {display:none;}
+<body>
+  <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#"> Marmeto</a>
+    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search"
+      id="myInput">
+    <ul class="navbar-nav px-3">
+      <li class="nav-item text-nowrap">
+        <a class="nav-link" href="/cms/logout"><i class="fas fa-user-tie"></i> Sign out</a>
+      </li>
+    </ul>
+  </nav>
 
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: #2196F3;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-
-      .far{
-        transform: translateY(-208%);
-    margin: 0px 1017px;
-      }
-    </style>
-    <!-- Custom styles for this template -->
-    <link href="/public/css/dashboard.css" rel="stylesheet">
-  </head>
-  <body>
-    <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-  <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#"> Marmeto</a>
-  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" id="myInput">
-  <ul class="navbar-nav px-3">
-    <li class="nav-item text-nowrap">
-      <a class="nav-link" href="/cms/logout"><i class="fas fa-user-tie"></i>  Sign out</a>
-    </li>
-  </ul>
-</nav>
-
-<div class="container-fluid">
-  <div class="row">
-    <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-      <div class="sidebar-sticky">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link" href='/cms/dashboard/1'>
-              <span data-feather="file"></span>
-              <i class="fas fa-users"></i> Manage Members
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/cms/dashboard/passwords/list">
-              <span data-feather="shopping-cart"></span>
-              <i class="fas fa-key"></i> Manage Passwords
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/cms/dashboard/roles/list">
-              <span data-feather="users"></span>
-              <i class="fas fa-user-tag"></i> Manage Roles
-            </a>
-          </li>
-        </ul>
-       <label class="switch">
-        <input type="checkbox">
-        <div class="slider"></div>
-      </label>
-        {{!-- <ul class="nav flex-column mb-2">
+  <div class="container-fluid">
+    <div class="row">
+      <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+        <div class="sidebar-sticky">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link" href='/cms/dashboard/1'>
+                <span data-feather="file"></span>
+                <i class="fas fa-users"></i> Manage Members
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/cms/dashboard/passwords/list">
+                <span data-feather="shopping-cart"></span>
+                <i class="fas fa-key"></i> Manage Passwords
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/cms/dashboard/roles/list">
+                <span data-feather="users"></span>
+                <i class="fas fa-user-tag"></i> Manage Roles
+              </a>
+            </li>
+          </ul>
+          <label class="switch">
+            <input type="checkbox">
+            <div class="slider"></div>
+          </label>
+          {{!-- <ul class="nav flex-column mb-2">
           <li class="nav-item">
             <a class="nav-link" href="#">
               <span data-feather="file-text"></span>
@@ -220,7 +228,7 @@ input:checked + .slider:before {
             </a>
           </li>
         </ul> --}}
-        {{!-- <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          {{!-- <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
           <span>Saved reports</span>
           <a class="d-flex align-items-center text-muted" href="#">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle">
@@ -256,27 +264,37 @@ input:checked + .slider:before {
             </a>
           </li>
         </ul> --}}
-      </div>
-    </nav>
+        </div>
+      </nav>
 
-    <main role="main" class="col-md-5 ml-sm-auto col-lg-10">
-      {{{body}}}
-    </main>
+      <main role="main" class="col-md-5 ml-sm-auto col-lg-10">
+        {{{body}}}
+      </main>
+    </div>
   </div>
-</div>
 
-<script>
-document.addEventListener('click', function () {
-  var checkbox = document.querySelector('input[type="checkbox"]');
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var checkbox = document.querySelector('input[type="checkbox"]');
 
-  checkbox.addEventListener('change', function () {
-    if (checkbox.checked) {
+      checkbox.addEventListener('change', function () {
+     //   console.log('Checked');
+     let check = {};
+         if (checkbox.checked) {
       // do this
-      console.log('Checked');
-    } else {
-      // do that
-      console.log('Not checked');
-    }
-  });
-});
-</script>
+          check = { CheckStatus: true };
+        } else {
+          // do that
+          check = { CheckStatus: false };
+        }
+        //console.log(check)
+        axios.post('/cms/save-check', check)
+        .then(function (response) {
+          console.log(response);
+        }).catch(function (error) {
+          console.log(error);
+        });
+
+      });
+    });
+  </script>
