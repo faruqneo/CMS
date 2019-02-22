@@ -11,6 +11,7 @@ const path = require('path')
 const config = require('./config/database')
 const passport = require('passport')
 const cms = require('./router/cms')
+const { passwordSitePromise } = require('./controllers/passwordController');
 require('dotenv').config()
 //const PORT = process.env.PORT || 5000
 
@@ -48,7 +49,12 @@ helpers:{
             "/": lvalue / rvalue,
             "%": lvalue % rvalue
         }[operator];
-    }
+    },
+    objToArray: function(arr) {
+        arr = arr.map(a => a.title);
+        arr = arr.join(', ');
+        return arr;
+      }
 }}));
 
 app.set('view engine', 'handlebars');
@@ -129,43 +135,59 @@ bot.on('message', (data) => {
 
 })
 
+
 //message handling
 function handleMessage(message)
 {
     let str = message.text.split('<@UG981U6LA>')
     let lower = str[1].toLowerCase()
-    bot.getUserById(message.user)
-    .then((details) => {
-        let slackemail = details.profile.email
-        let member = []
-        let slackrole
+    if(lower.includes('show password for'))
+        {
+            let slackrequest = lower.split(' ')
+            let website = slackrequest[4];
+            bot.getUserById(message.user)
+            .then((details) => {
+                let slackemail = details.profile.email
+                let member = []
+                let slackrole
 
-        //getting members list through API
-        axios({
-            method: 'post',
-            url: 'http://localhost:3000/cms/members/name',
-            data: {
-              email: slackemail
-            }
-          }).then((res) => {
-              //console.log(res.data)
-                member.push({"name":res.data.name,"email":res.data.email,"role":res.data.role})
-            
-                slackrole = member[0].role
-                //console.log(slackrole)
+                //getting members list through API
                 axios({
                     method: 'post',
-                    url: 'http://localhost:3000/cms/password/website',
+                    url: 'http://localhost:3000/cms/members/name',
                     data: {
-                      role: slackrole
+                    email: slackemail
                     }
-                  }).then(res => console.log(res))
-                  .catch(err => console.log(err))
+                }).then( async (res) => {
+                    //console.log(res.data)
+                        member.push({"name":res.data.name,"email":res.data.email,"role":res.data.role})
+                    
+                        slackrole = member[0].role
+                        //console.log(slackrole)
+                        let passwords = await passwordSitePromise(website);
+                        //console.log(passwords.role[0].title);
+                        if(passwords.role[0].title === slackrole || slackrole === "admin")
+                        {
+                            //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
+                            bot.postMessage(message.user, `login url: ${passwords.login}\nusername: ${passwords.username}\npassword: ${passwords.password}`)
+                        }
+                        else
+                        {
+                            bot.postMessage(message.user, 'You have no privilages.')
+                        }
 
+                    })
+                .catch((err) => {
+                    console.log(err);
+                    bot.postMessage(message.user, 'This website is not in list.')
+                })
             })
-          .catch(err => console.log(err))
-    })
-    .catch(error => console.log(error))
+            .catch(error => console.log(error))
+        }
+        else
+        {
+            bot.postMessage(message.user, 'Please enter in this format, eg:"show password for <website>" ')
+        }
 }
 
 //server is listening

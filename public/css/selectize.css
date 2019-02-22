@@ -176,13 +176,15 @@
     zoom: 1;
     *display: inline;
   }
+  /* need some modification for dispaly */
   .selectize-control.multi .selectize-input > div {
     cursor: pointer;
     margin: 0 3px 3px 0;
     padding: 2px 6px;
-    background: #f2f2f2;
-    color: #303030;
-    border: 0 solid #d0d0d0;
+    background: #0fa6d4;
+    color: #fbf7f7;
+    border: 0 solid #0893bd;
+    border-radius: 3px;
   }
   .selectize-control.multi .selectize-input > div.active {
     background: #e8e8e8;

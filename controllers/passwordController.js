@@ -3,36 +3,34 @@ const Role = require('../model/role')
 const moment = require('moment');
 
 //Load password list
-exports.passwordList = (req, res) => {
-    Password.find({},function(err, password){
-        if(err)
-        {
-            console.log(err)
-        }
-        else{
-            //console.log(password)
-            res.render('passwords', {
-                password
-            });
-        }
-    });
+exports.passwordList = async (req, res) => {
+    try {
+        let password = await Password.find({}).populate({ path: 'role', select: 'title -_id' });
+        res.render('passwords', {
+            password
+        });
+    } catch (error) {
+        console.log(error)
+    }
+
 }
 
 exports.addPassword = (req, res) => {
     Role.find({},function(err, roles){
         res.render('add_passwords', {
+            encodedJson : encodeURIComponent(JSON.stringify(roles)),
             roles
         })
     });
 }
 
 //adding new passwords
-exports.addNew = (req, res) => {
+exports.addNew = async (req, res) => {
     req.checkBody('website', 'Website is required').notEmpty();
     req.checkBody('login', 'Login is required').notEmpty();
     req.checkBody('role', 'Role is required').notEmpty();
     req.checkBody('username', 'username is required').notEmpty();
-    req.checkBody('password', 'Password is required').notEmpty();
+    req.checkBody('passWord', 'Password is required').notEmpty();
 
     let errors = req.validationErrors();
 
@@ -48,12 +46,32 @@ exports.addNew = (req, res) => {
     else
     {
         let password = new Password();
-        password.website = req.body.website;
-        password.login = req.body.login;
-        password.role = req.body.role;
-        password.username = req.body.username;
-        password.password = req.body.password;
-        //res.json(password)
+        let { website, login, role, username, passWord } = req.body;
+        password.website = website;
+        password.login = login;
+        let roles = role.split(',');
+        //console.log(roles)
+        let role_ids = [];
+        if(roles.length) {
+            // find all role _id in db
+            try {
+                let db_roles = await Role.find({title: {$in: roles}});
+                //console.log(db_roles)
+                if(db_roles) {
+                    for(let db_role of db_roles) {
+                        role_ids.push(db_role._id);
+                    }
+                    //console.log(role_ids)
+                }
+            } catch (error) {
+                //console.log(error);
+            }
+
+        }
+        password.role = role_ids;
+        password.username = username;
+        password.password = passWord;
+        //console.log(role_ids)
         password.save(function(err){
             if(err)
             {
@@ -69,16 +87,18 @@ exports.addNew = (req, res) => {
 }
 
 //detailes view for password
-exports.passwordsView = (req, res) => {
-    Password.findById(req.params.id,function(err, passwords){
-            res.render('passwordsView', {
-                passwords
-            });
-        })
+exports.passwordsView = async (req, res) => {
+    let passwords = await Password.findById(req.params.id).populate({ path: 'role', select: 'title -_id' });
+    let roles = await Role.find({});
+    res.render('passwordsView',{
+        passwords,
+        encodedJson : encodeURIComponent(JSON.stringify(roles)),
+        roles
+    })
 }
 
 //update for passwords
-exports.passwordsUpdate = (req, res) => {
+exports.passwordsUpdate = async (req, res) => {
     req.checkBody('website', 'website is required').notEmpty();
     req.checkBody('login', 'login is required').notEmpty();
     req.checkBody('role', 'role is required').notEmpty();
@@ -98,7 +118,26 @@ exports.passwordsUpdate = (req, res) => {
         let passwords = req.body;
         passwords.updatedAT = moment().format();
         let id = {_id:req.params.id}
-        //console.log(req.params.id)
+        let roles = passwords.role.split(',');
+        let role_ids = [];
+        //console.log(roles)
+        if(roles.length){
+             // find all role _id in db
+             try {
+                let db_roles = await Role.find({title: {$in: roles}});
+                //console.log(db_roles)
+                if(db_roles) {
+                    for(let db_role of db_roles) {
+                        role_ids.push(db_role._id);
+                    }
+                    //console.log(role_ids)
+                }
+            } catch (error) {
+                console.log(error);
+            }
+
+        }           
+        passwords.role = role_ids
         Password.updateOne(id, passwords,function(err){
             if(err)
             {
@@ -129,11 +168,16 @@ exports.passwordsDelete = (req, res) => {
     })
 }
 
-//Passwords list api for bot
+// //Passwords list api for bot 
 exports.passwordSite = (req, res) => {
     let password = res.body
     //console.log("test")
     Password.find(password,function(err, password){
         res.send(password)
     });
+}
+
+
+exports.passwordSitePromise = (website) => {
+    return Password.findOne({website}).populate('role');
 }

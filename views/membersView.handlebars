@@ -29,7 +29,9 @@
   </div>
   <div class="form-group">
     <label for="name">Password:</label>
-    <input type="text" class="form-control" name="password" value="{{members.password}}">
+    <input type="text" class="form-control" name="password" value="{{members.password}}" id="password">
+        <i class="far fa-eye" onclick="showPassword();"></i>
+        <i class="far fa-eye-slash" onclick="showPassword();" style="display:none"></i>
   </div>
   <button type="submit" class="btn btn-primary">submit</button>
   <a href="/cms/dashboard/1"><button type="button" class="btn btn-default">back</button></a>
@@ -42,4 +44,17 @@ $(document).ready(function(){
     $('#exist').remove();
   });
 });
+
+    function showPassword() {
+        var x = document.getElementById("password");
+        if (x.type === "password") {
+            x.type = "text";
+            $('.fa-eye').hide();
+            $('.fa-eye-slash').show();
+        } else {
+            x.type = "password";
+            $('.fa-eye-slash').hide();
+            $('.fa-eye').show();
+        }
+    }
 </script>
