@@ -125,7 +125,7 @@
       width: 60px;
       height: 34px;
       margin: 0px 63px;
-    transform: translateY(1000%);
+      transform: translateY(1000%);
     }
 
     .switch input {
@@ -192,6 +192,7 @@
     </ul>
   </nav>
 
+
   <div class="container-fluid">
     <div class="row">
       <nav class="col-md-2 d-none d-md-block bg-light sidebar">
@@ -217,53 +218,11 @@
             </li>
           </ul>
           <label class="switch">
-            <input type="checkbox">
+            <input id="chatCheck" type="checkbox">
             <div class="slider"></div>
           </label>
-          {{!-- <ul class="nav flex-column mb-2">
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Setting
-            </a>
-          </li>
-        </ul> --}}
-          {{!-- <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-          <span>Saved reports</span>
-          <a class="d-flex align-items-center text-muted" href="#">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="16"></line>
-            <line x1="8" y1="12" x2="16" y2="12"></line>
-            </svg>
-          </a>
-        </h6>
-        <ul class="nav flex-column mb-2">
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Current month
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Last quarter
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Social engagement
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Year-end sale
-            </a>
-          </li>
-        </ul> --}}
+          {{!-- {{#if permitted}}permitted{{/if}} --}}
+
         </div>
       </nav>
 
@@ -274,27 +233,27 @@
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var checkbox = document.querySelector('input[type="checkbox"]');
 
-      checkbox.addEventListener('change', function () {
-     //   console.log('Checked');
-     let check = {};
-         if (checkbox.checked) {
-      // do this
-          check = { CheckStatus: true };
-        } else {
-          // do that
-          check = { CheckStatus: false };
-        }
-        //console.log(check)
-        axios.post('/cms/save-check', check)
+   document.addEventListener('DOMContentLoaded', function () {
+      let permission = "{{permitted}}";
+
+     if(permission == "true")
+        document.getElementById('chatCheck').checked=true;
+    
+     
+
+    $("#chatCheck").on("change", function () {
+      let checkbox = document.getElementById('chatCheck').checked;
+      let check = { status12: checkbox };
+
+      console.log(check)
+      axios.post('/cms/save-check', check)
         .then(function (response) {
           console.log(response);
         }).catch(function (error) {
           console.log(error);
         });
 
-      });
+    });
     });
   </script>

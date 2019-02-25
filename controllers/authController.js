@@ -5,7 +5,7 @@ exports.login = (req, res, next) => {
         passport.authenticate('local',{
         successRedirect: '/cms/dashboard/1',
         failureRedirect: '/cms',
-        failureFlash: 'true'
+        failureFlash: 'true',
     })(req, res, next);
 };
 

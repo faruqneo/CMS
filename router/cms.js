@@ -4,10 +4,11 @@ const authController = require('../controllers/authController')
 const rolesController = require('../controllers/rolesController')
 const membersController = require('../controllers/memberController')
 const passwordController = require('../controllers/passwordController')
+const Switch1 = require('../model/switch')
 const router = express.Router()
 
 // Catalog for the routers
-router.use(function timeLog (req, res, next) {
+router.use(function timeLog(req, res, next) {
     console.log('Catalog:', moment().format('MMMM Do YYYY, h:mm:ss a'))
     next()
 })
@@ -15,23 +16,29 @@ router.use(function timeLog (req, res, next) {
 
 //Index page
 router.get('/', (req, res) => {
-    res.render('home',{layout: false})
+    res.render('home', { layout: false })
 })
 
 //Index page
 router.post('/save-check', async (req, res) => {
-try {
-    let checkStatus = await res.body.CheckStatus
-    //console.log(checkStatus)
-    if(checkStatus){
-        return({status: true, msg:"Status updated" })
-    }else{
-        return({status: false, msg:"No data found in the api" })
+    try {
+        if (req.body) {
+            let checkStatus = req.body.status12;
+            let addObj = new Switch1();
+            //console.log(req.body)
+            addObj.status = checkStatus;
+            //console.log(addObj)
+           let button = await addObj.save()
+           res.render('main',{
+               button
+           })
+        } else {
+            return "Status undefined";
+        }
+    } catch (error) {
+        console.log(error)
     }
-} catch (error) {
-    console.log(error)
-}
-        
+
 })
 
 //Login router
@@ -45,7 +52,7 @@ router.post('/dashboard/members/new_add', authController.ensureAthenticated, mem
 router.get('/dashboard/members/edit/:id', authController.ensureAthenticated, membersController.membersView)
 router.post('/dashboard/update/members/:id', authController.ensureAthenticated, membersController.membersUpdate)
 router.get('/dashboard/memebers/delete/:id', authController.ensureAthenticated, membersController.membersDelete)
-router.post('/members/name',membersController.userName)
+router.post('/members/name', membersController.userName)
 
 //Password routers
 router.get('/dashboard/passwords/list', authController.ensureAthenticated, passwordController.passwordList)

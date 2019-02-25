@@ -6,7 +6,7 @@ const bodyParser = require('body-parser')
 const SlackBots = require('slackbots')
 const axios = require('axios')
 const expressValidator = require('express-validator')
-const  _ = require("underscore")
+const _ = require("underscore")
 const path = require('path')
 const config = require('./config/database')
 const passport = require('passport')
@@ -23,13 +23,13 @@ mongoose.connect(config.database, { useNewUrlParser: true });
 let db = mongoose.connection;
 
 //checking for connection
-db.once('open', function(){
+db.once('open', function () {
     console.log("connected with mongodb")
 });
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
- 
+
 // parse application/json
 app.use(bodyParser.json())
 
@@ -37,25 +37,48 @@ app.use(bodyParser.json())
 app.use("/public", express.static(path.join(__dirname, 'public')));
 
 //setting up view pages
-app.engine('handlebars', exphbs({defaultLayout: 'main',
-helpers:{
-    // Function to do basic mathematical operation in handlebar
-    math: function(lvalue, operator, rvalue) {lvalue = parseFloat(lvalue);
-        rvalue = parseFloat(rvalue);
-        return {
-            "+": lvalue + rvalue,
-            "-": lvalue - rvalue,
-            "*": lvalue * rvalue,
-            "/": lvalue / rvalue,
-            "%": lvalue % rvalue
-        }[operator];
-    },
-    objToArray: function(arr) {
-        arr = arr.map(a => a.title);
-        arr = arr.join(', ');
-        return arr;
-      }
-}}));
+app.engine('handlebars', exphbs({
+    defaultLayout: 'main',
+    helpers: {
+        // Function to do basic mathematical operation in handlebar
+        math: function (lvalue, operator, rvalue) {
+            lvalue = parseFloat(lvalue);
+            rvalue = parseFloat(rvalue);
+            return {
+                "+": lvalue + rvalue,
+                "-": lvalue - rvalue,
+                "*": lvalue * rvalue,
+                "/": lvalue / rvalue,
+                "%": lvalue % rvalue
+            }[operator];
+        },
+        objToArray: function (arr) {
+            arr = arr.map(a => a.title);
+            arr = arr.join(', ');
+//             console.log(arr);
+//             var hello = `
+//                 < div class="default selectize-control demo-default selectized multi" style = "display: block;" >
+//                     <div class="selectize-input items has-options has-items full">`;
+// console.log("prinitng v alues");
+                   
+//             var hello1 = `
+//                         <div data-value="admin" class="item">admin</div>
+//                         <div data-value="development" class="item">development</div>
+//                         <div data-value="hr" class="item">hr</div>`;
+
+//             var helo2 = `
+//                         <input type="text" tabindex="-1" style="width: 4px; opacity: 1; position: relative; left: 0px;"></div>
+//                         <div class="selectize-dropdown" style="display: none; visibility: visible; width: 1052.5px; top: 36px; left: 0px;">
+//                             <div class="selectize-dropdown-content">
+//                                 <div data-value="marketing" data-selectable="" class="option">marketing</div>
+//                             </div>
+//                         </div>
+//                     </div>`;
+            
+            return arr;
+        }
+    }
+}));
 
 app.set('view engine', 'handlebars');
 
@@ -68,28 +91,33 @@ app.use(session({
 //Password middelware
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(function(req, res, next){
+    console.log(req.user);
+    app.locals.permitted = req.user ? req.user.permitted : false;
+    next();
+});
 
 //express messages middleware
 app.use(require('connect-flash')());
 app.use(function (req, res, next) {
-  res.locals.messages = require('express-messages')(req, res);
-  next();
+    res.locals.messages = require('express-messages')(req, res);
+    next();
 });
 
 //express validator
 app.use(expressValidator({
-    errorFormatter: function(param, msg, value) {
+    errorFormatter: function (param, msg, value) {
         var namespace = param.split('.')
-        , root    = namespace.shift()
-        , formParam = root;
+            , root = namespace.shift()
+            , formParam = root;
 
-        while(namespace.length) {
-        formParam += '[' + namespace.shift() + ']';
+        while (namespace.length) {
+            formParam += '[' + namespace.shift() + ']';
         }
         return {
-        param : formParam,
-        msg   : msg,
-        value : value
+            param: formParam,
+            msg: msg,
+            value: value
         };
     }
 }));
@@ -105,8 +133,8 @@ app.use('/', (req, res) => {
 })
 
 //checking for user
-app.get('*', function(req, res, next){
-    res.locals.user = req.user || null ;
+app.get('*', function (req, res, next) {
+    res.locals.user = req.user || null;
     next();
 })
 
@@ -126,26 +154,23 @@ bot.on('error', (err) => console.log(err))
 
 //message checking
 bot.on('message', (data) => {
-    if(data.type !== 'message')
-    {
+    if (data.type !== 'message') {
         return;
     }
-    if(data.text.startsWith('<@UG981U6LA>'))
-        handleMessage(data)  
+    if (data.text.startsWith('<@UG981U6LA>'))
+        handleMessage(data)
 
 })
 
 
 //message handling
-function handleMessage(message)
-{
+function handleMessage(message) {
     let str = message.text.split('<@UG981U6LA>')
     let lower = str[1].toLowerCase()
-    if(lower.includes('show password for'))
-        {
-            let slackrequest = lower.split(' ')
-            let website = slackrequest[4];
-            bot.getUserById(message.user)
+    if (lower.includes('show password for')) {
+        let slackrequest = lower.split(' ')
+        let website = slackrequest[4];
+        bot.getUserById(message.user)
             .then((details) => {
                 let slackemail = details.profile.email
                 let member = []
@@ -156,38 +181,35 @@ function handleMessage(message)
                     method: 'post',
                     url: 'http://localhost:3000/cms/members/name',
                     data: {
-                    email: slackemail
+                        email: slackemail
                     }
-                }).then( async (res) => {
+                }).then(async (res) => {
                     //console.log(res.data)
-                        member.push({"name":res.data.name,"email":res.data.email,"role":res.data.role})
-                    
-                        slackrole = member[0].role
-                        //console.log(slackrole)
-                        let passwords = await passwordSitePromise(website);
-                        //console.log(passwords.role[0].title);
-                        if(passwords.role[0].title === slackrole || slackrole === "admin")
-                        {
-                            //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
-                            bot.postMessage(message.user, `login url: ${passwords.login}\nusername: ${passwords.username}\npassword: ${passwords.password}`)
-                        }
-                        else
-                        {
-                            bot.postMessage(message.user, 'You have no privilages.')
-                        }
+                    member.push({ "name": res.data.name, "email": res.data.email, "role": res.data.role })
 
-                    })
-                .catch((err) => {
-                    console.log(err);
-                    bot.postMessage(message.user, 'This website is not in list.')
+                    slackrole = member[0].role
+                    //console.log(slackrole)
+                    let passwords = await passwordSitePromise(website);
+                    //console.log(passwords.role[0].title);
+                    if (passwords.role[0].title === slackrole || slackrole === "admin") {
+                        //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
+                        bot.postMessage(message.user, `login url: ${passwords.login} \nusername: ${passwords.username} \npassword: ${passwords.password} `)
+                    }
+                    else {
+                        bot.postMessage(message.user, 'You have no privilages.')
+                    }
+
                 })
+                    .catch((err) => {
+                        console.log(err);
+                        bot.postMessage(message.user, 'This website is not in list.')
+                    })
             })
             .catch(error => console.log(error))
-        }
-        else
-        {
-            bot.postMessage(message.user, 'Please enter in this format, eg:"show password for <website>" ')
-        }
+    }
+    else {
+        bot.postMessage(message.user, 'Please enter in this format, eg:"show password for <website>" ')
+    }
 }
 
 //server is listening
