@@ -13,6 +13,7 @@ module.exports = function(passport){
            let check = await Switch1.find({}).sort({"_id":-1});
             //console.log(check[0].status)
             user.permitted = check[0].status;
+            global.permitted = user.permitted;
             // global.permitted = false;
             bcrypt.compare(password, user.password, function(err, isMatch){
              // console.log('password')
@@ -55,7 +56,7 @@ module.exports = function(passport){
 
 
     passport.serializeUser(function(user, done) {
-      console.log({user})
+     // console.log({user})
       done(null, {id:user._id, permitted: user.permitted});
     });
     
@@ -65,6 +66,7 @@ module.exports = function(passport){
       try {
         let user = await User.findById(id).lean();
         user.permitted = permitted;
+        
         done(null, user);
       } catch (error) {
         done(error, null);

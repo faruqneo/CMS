@@ -64,7 +64,7 @@ exports.memberList = (req, res) => {
     .limit(perPage)
     .exec(function(err, member) {
         Member.countDocuments().exec(function(err, count) {
-
+           // console.log(count)
             let pages = [];
             for(let i=1; i<= Math.ceil(count / perPage); i++)
                 {
@@ -75,7 +75,7 @@ exports.memberList = (req, res) => {
             res.render('dashboard', {
                 member: member,
                 pages,
-                last: Math.ceil(count / perPage)
+                last: Math.ceil(count / perPage) 
             })
             
         })

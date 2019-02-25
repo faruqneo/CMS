@@ -25,13 +25,15 @@ router.post('/save-check', async (req, res) => {
         if (req.body) {
             let checkStatus = req.body.status12;
             let addObj = new Switch1();
-            //console.log(req.body)
+           // console.log({b:req.body})
             addObj.status = checkStatus;
+            req.user.permitted = checkStatus;
+            global.permitted = checkStatus;
             //console.log(addObj)
            let button = await addObj.save()
-           res.render('main',{
-               button
-           })
+        //    res.render('main',{
+        //        button
+        //    })
         } else {
             return "Status undefined";
         }
@@ -52,7 +54,7 @@ router.post('/dashboard/members/new_add', authController.ensureAthenticated, mem
 router.get('/dashboard/members/edit/:id', authController.ensureAthenticated, membersController.membersView)
 router.post('/dashboard/update/members/:id', authController.ensureAthenticated, membersController.membersUpdate)
 router.get('/dashboard/memebers/delete/:id', authController.ensureAthenticated, membersController.membersDelete)
-router.post('/members/name', membersController.userName)
+router.post('/members/name',authController.ensurePermission, membersController.userName)
 
 //Password routers
 router.get('/dashboard/passwords/list', authController.ensureAthenticated, passwordController.passwordList)

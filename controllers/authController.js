@@ -21,3 +21,12 @@ exports.ensureAthenticated = (req, res, next) => {
     res.redirect('/cms')
 
 }
+
+exports.ensurePermission = (req, res, next) => {
+    if(!permitted){
+       return next();
+   }
+   else
+    return {msg: "please contact to admin"}
+
+}

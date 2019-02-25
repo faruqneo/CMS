@@ -13,7 +13,7 @@ const passport = require('passport')
 const cms = require('./router/cms')
 const { passwordSitePromise } = require('./controllers/passwordController');
 require('dotenv').config()
-//const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5000
 
 //Init app
 const app = express()
@@ -54,27 +54,9 @@ app.engine('handlebars', exphbs({
         },
         objToArray: function (arr) {
             arr = arr.map(a => a.title);
-            arr = arr.join(', ');
-//             console.log(arr);
-//             var hello = `
-//                 < div class="default selectize-control demo-default selectized multi" style = "display: block;" >
-//                     <div class="selectize-input items has-options has-items full">`;
-// console.log("prinitng v alues");
-                   
-//             var hello1 = `
-//                         <div data-value="admin" class="item">admin</div>
-//                         <div data-value="development" class="item">development</div>
-//                         <div data-value="hr" class="item">hr</div>`;
-
-//             var helo2 = `
-//                         <input type="text" tabindex="-1" style="width: 4px; opacity: 1; position: relative; left: 0px;"></div>
-//                         <div class="selectize-dropdown" style="display: none; visibility: visible; width: 1052.5px; top: 36px; left: 0px;">
-//                             <div class="selectize-dropdown-content">
-//                                 <div data-value="marketing" data-selectable="" class="option">marketing</div>
-//                             </div>
-//                         </div>
-//                     </div>`;
-            
+            // arr = arr.join(', ');
+            // arr = arr.split(',');
+            //console.log(arr)
             return arr;
         }
     }
@@ -92,8 +74,12 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(function(req, res, next){
-    console.log(req.user);
-    app.locals.permitted = req.user ? req.user.permitted : false;
+   // console.log({s:req.user});
+    if(typeof global.permitted === "boolean") {
+        app.locals.permitted = global.permitted;
+    } else {
+        app.locals.permitted = req.user ? req.user.permitted : false;
+    }
     next();
 });
 
@@ -185,27 +171,34 @@ function handleMessage(message) {
                     }
                 }).then(async (res) => {
                     //console.log(res.data)
-                    member.push({ "name": res.data.name, "email": res.data.email, "role": res.data.role })
-
-                    slackrole = member[0].role
-                    //console.log(slackrole)
                     let passwords = await passwordSitePromise(website);
-                    //console.log(passwords.role[0].title);
-                    if (passwords.role[0].title === slackrole || slackrole === "admin") {
-                        //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
-                        bot.postMessage(message.user, `login url: ${passwords.login} \nusername: ${passwords.username} \npassword: ${passwords.password} `)
+
+                    if(passwords != null)
+                    {
+                        member.push({ "name": res.data.name, "email": res.data.email, "role": res.data.role })
+
+                        slackrole = member[0].role
+                        //console.log(slackrole)
+                        
+                        //console.log(passwords.role[0].title);
+                        if (passwords.role[0].title === slackrole || slackrole === "admin") {
+                            //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
+                            bot.postMessage(message.user, `login url: ${passwords.login} \nusername: ${passwords.username} \npassword: ${passwords.password} `)
+                        }
+                        else {
+                            bot.postMessage(message.user, 'You have no privilages.')
+                        }
                     }
-                    else {
-                        bot.postMessage(message.user, 'You have no privilages.')
-                    }
+                    else
+                        bot.postMessage(message.user, 'This website is not in list.')
 
                 })
                     .catch((err) => {
                         console.log(err);
-                        bot.postMessage(message.user, 'This website is not in list.')
+                        bot.postMessage(message.user, 'Please contact to admin.')
                     })
             })
-            .catch(error => console.log(error))
+            .catch(error => {console.log(error)})
     }
     else {
         bot.postMessage(message.user, 'Please enter in this format, eg:"show password for <website>" ')
@@ -213,6 +206,6 @@ function handleMessage(message) {
 }
 
 //server is listening
-app.listen(3000, () => {
+app.listen(PORT, () => {
     console.log('server is running')
 })
