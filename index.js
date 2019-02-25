@@ -190,7 +190,7 @@ function handleMessage(message) {
                         }
                     }
                     else
-                        bot.postMessage(message.user, 'This website is not in list.')
+                        {bot.postMessage(message.user, 'This website is not in list.');}
 
                 })
                     .catch((err) => {
