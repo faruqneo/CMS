@@ -132,17 +132,18 @@ const bot = new SlackBots({
 
 //bot start
 bot.on('start', () => {
-    // bot.postMessageToChannel('testing', 'Hii')
+   // bot.postMessageToChannel('testing', 'Hii')
 })
 //error checking
 bot.on('error', (err) => console.log(err))
 
 //message checking
 bot.on('message', (data) => {
-    if (data.type !== 'message') {
+    
+    if (data.type != 'message') {
         return;
     }
-    if (data.text.startsWith('<@UG981U6LA>'))
+    if (data.text.startsWith('<@UGGR0QUDR>'))
         handleMessage(data)
 
 })
@@ -150,7 +151,7 @@ bot.on('message', (data) => {
 
 //message handling
 function handleMessage(message) {
-    let str = message.text.split('<@UG981U6LA>')
+    let str = message.text.split('<@UGGR0QUDR>')
     let lower = str[1].toLowerCase()
     console.log(lower)
     if (lower.includes('show password for')) {
@@ -165,7 +166,7 @@ function handleMessage(message) {
                 //getting members list through API
                 axios({
                     method: 'post',
-                    url: 'http://localhost:5000/cms/members/name',
+                    url: 'http://localhost:3000/cms/members/name',
                     data: {
                         email: slackemail
                     }
