@@ -132,7 +132,7 @@ const bot = new SlackBots({
 
 //bot start
 bot.on('start', () => {
-    bot.postMessageToChannel('general', 'Hii')
+    // bot.postMessageToChannel('testing', 'Hii')
 })
 //error checking
 bot.on('error', (err) => console.log(err))
@@ -152,6 +152,7 @@ bot.on('message', (data) => {
 function handleMessage(message) {
     let str = message.text.split('<@UG981U6LA>')
     let lower = str[1].toLowerCase()
+    console.log(lower)
     if (lower.includes('show password for')) {
         let slackrequest = lower.split(' ')
         let website = slackrequest[4];
