@@ -177,7 +177,7 @@ exports.userName = (req, res) => {
         let member = req.body;
             Member.findOne(member, function(err, data)
             {
-                res.send(data)
+              res.send(data)
             })
     } else {
         res.status(401).send({msg: "UnAuthenticated"})

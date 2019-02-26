@@ -23,13 +23,14 @@ exports.ensureAthenticated = (req, res, next) => {
 }
 
 exports.ensurePermission = (req, res, next) => {
-    if(!permitted){
+    // console.log(permitted)
+    if(!global.permitted){
         req.isPermitted = true;
        return next();
    }
    else {
     req.isPermitted = false;
-    return next({msg: "please contact to admin"})
+    return next({msg: "UnAuthenticated"})
    }
    
 

@@ -160,7 +160,7 @@ function handleMessage(message) {
                 let slackemail = details.profile.email
                 let member = []
                 let slackrole
-
+                
                 //getting members list through API
                 axios({
                     method: 'post',
@@ -169,7 +169,7 @@ function handleMessage(message) {
                         email: slackemail
                     }
                 }).then(async (res) => {
-                    //console.log(res.data)
+                   // console.log(res)
                     let passwords = await passwordSitePromise(website);
 
                     if(passwords != null)
@@ -193,7 +193,7 @@ function handleMessage(message) {
 
                 })
                     .catch((err) => {
-                        console.log(err);
+                        console.log("err");
                         bot.postMessage(message.user, 'Please contact to admin.')
                     })
             })
