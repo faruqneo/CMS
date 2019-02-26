@@ -9,7 +9,8 @@ const MemberSchema = mongoose.Schema({
     },
     email:{
         type: String,
-        require: true
+        require: true,
+        unique: true
     },
     role:{
         type: mongoose.Schema.Types.String,

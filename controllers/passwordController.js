@@ -88,6 +88,7 @@ exports.addNew = async (req, res) => {
 
 //detailes view for password
 exports.passwordsView = async (req, res) => {
+    try {
     let passwords = await Password.findById(req.params.id).populate({ path: 'role', select: 'title -_id' });
     let roles = await Role.find({});
     res.render('passwordsView',{
@@ -95,6 +96,9 @@ exports.passwordsView = async (req, res) => {
         encodedJson : encodeURIComponent(JSON.stringify(roles)),
         roles
     })
+    } catch (error) {
+       throw error 
+    }
 }
 
 //update for passwords

@@ -4,7 +4,8 @@ const moment = require('moment');
 let RoleSchema = mongoose.Schema({
     title:{
         type: String,
-        require: true
+        require: true,
+        unique: true
     },
     description:{
         type: String,

@@ -1,6 +1,8 @@
 const Member = require('../model/member')
 const Role = require('../model/role')
-const moment = require('moment');
+const User = require('../model/user')
+const moment = require('moment')
+const bcrypt = require('bcryptjs')
 
 function titleCase(str) {
     var splitStr = str.toLowerCase().split(' ');
@@ -22,7 +24,7 @@ exports.addMember = (req, res) => {
 }
 
 //adding new roles
-exports.addNew = (req, res) => {
+exports.addNew =  (req, res) => {
     req.checkBody('name', 'Name is required').notEmpty();
     req.checkBody('email', 'Email is required').notEmpty();
     req.checkBody('role', 'Role is required').notEmpty();
@@ -54,8 +56,37 @@ exports.addNew = (req, res) => {
             }
             else
             {
-                req.flash('success_msg', 'Member Added')
-                res.redirect('/cms/dashboard/:')
+
+            if(member.role === 'admin')
+            {
+                let user = new User()
+                user.username = member.email;
+                //console.log(member.password)
+                bcrypt.genSalt(10, function(err, salt){
+                    bcrypt.hash(member.password, salt, async function(err, hash){
+                       try {
+                        if(err)
+                        {
+                            console.log(err)
+                        }
+                        user.password = await hash;
+                       // console.log({user});
+                        await user.save()
+                        //console.log("check")
+                        if(err)
+                        {
+                            console.log(err)
+                            return;
+                        }
+                         
+                       } catch (error) {
+                           throw error
+                       }
+                    });
+                });
+            }
+            //console.log("something")
+            return res.redirect('/cms/dashboard/:')  
             }
         });
     }

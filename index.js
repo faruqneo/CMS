@@ -172,26 +172,30 @@ function handleMessage(message) {
                     }
                 }).then(async (res) => {
                    // console.log(res)
-                    let passwords = await passwordSitePromise(website);
+                    try {
+                        let passwords = await passwordSitePromise(website);
 
-                    if(passwords != null)
-                    {
-                        member.push({ "name": res.data.name, "email": res.data.email, "role": res.data.role })
-
-                        slackrole = member[0].role
-                        //console.log(slackrole)
-                        
-                        //console.log(passwords.role[0].title);
-                        if (passwords.role[0].title === slackrole || slackrole === "admin") {
-                            //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
-                            bot.postMessage(message.user, `login url: ${passwords.login} \nusername: ${passwords.username} \npassword: ${passwords.password} `)
+                        if(passwords != null)
+                        {
+                            member.push({ "name": res.data.name, "email": res.data.email, "role": res.data.role })
+    
+                            slackrole = member[0].role
+                            //console.log(slackrole)
+                            
+                            //console.log(passwords.role[0].title);
+                            if (passwords.role[0].title === slackrole || slackrole === "admin") {
+                                //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
+                                bot.postMessage(message.user, `login url: ${passwords.login} \nusername: ${passwords.username} \npassword: ${passwords.password} `)
+                            }
+                            else {
+                                bot.postMessage(message.user, 'You have no privilages.')
+                            }
                         }
-                        else {
-                            bot.postMessage(message.user, 'You have no privilages.')
-                        }
+                        else
+                            {bot.postMessage(message.user, 'This website is not in list.');}
+                    } catch (error) {
+                        throw error
                     }
-                    else
-                        {bot.postMessage(message.user, 'This website is not in list.');}
 
                 })
                     .catch((err) => {

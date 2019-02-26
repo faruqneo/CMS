@@ -11,7 +11,7 @@ module.exports = function(passport){
             if (!user) { return done(null, false, {message: 'No user found'}); }
 
            let check = await Switch1.find({}).sort({"_id":-1});
-            //console.log(check[0].status)
+            //console.log(check)
             user.permitted = check[0].status;
             global.permitted = user.permitted;
             // global.permitted = false;

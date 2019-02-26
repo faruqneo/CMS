@@ -18,7 +18,7 @@ exports.ensureAthenticated = (req, res, next) => {
      if(req.isAuthenticated()){
         return next();
     }
-    res.redirect('/cms')
+    return res.redirect('/cms')
 
 }
 

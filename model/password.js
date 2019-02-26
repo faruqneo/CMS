@@ -5,7 +5,8 @@ const moment = require('moment');
 const PasswordSchema = mongoose.Schema({
     website:{
         type: String,
-        require: true
+        require: true,
+        unique: true
     },
     login: {
         type: String,
