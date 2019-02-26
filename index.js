@@ -127,7 +127,7 @@ app.get('*', function (req, res, next) {
 //create a bot
 const bot = new SlackBots({
     token: process.env.slack_bot_token,
-    name: 'punto'
+    name: 'genie'
 });
 
 //bot start
