@@ -137,7 +137,7 @@ exports.membersUpdate = (req, res) => {
     else
     {
         let members = req.body;
-        members.updatedAT = moment().format();
+        members.updatedAT = moment().format('MMMM Do YYYY, h:mm:ss a');
         let id = {_id:req.params.id}
         //console.log(req.params.id)
         Member.updateOne(id, members,function(err){

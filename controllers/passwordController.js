@@ -116,7 +116,7 @@ exports.passwordsUpdate = async (req, res) => {
     else
     {
         let passwords = req.body;
-        passwords.updatedAT = moment().format();
+        passwords.updatedAT = moment().format('MMMM Do YYYY, h:mm:ss a');
         let id = {_id:req.params.id}
         let roles = passwords.role.split(',');
         let role_ids = [];

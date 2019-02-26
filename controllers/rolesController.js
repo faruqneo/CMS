@@ -79,7 +79,7 @@ exports.rolesUpdate = (req, res) => {
     else
     {
         let roles = req.body;
-        roles.updatedAT = moment().format();
+        roles.updatedAT = moment().format('MMMM Do YYYY, h:mm:ss a')
         let id = {_id:req.params.id}
         //console.log(req.params.id)
         Roles.updateOne(id, roles,function(err){

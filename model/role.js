@@ -11,12 +11,12 @@ let RoleSchema = mongoose.Schema({
         require: true
     },
     createdAt:{
-        type: Date,
-        default: moment().format()
+        type: String,
+        default: moment().format('MMMM Do YYYY, h:mm:ss a')
     },
     updatedAT:{
-        type: Date,
-        default: moment().format()
+        type: String,
+        default: moment().format('MMMM Do YYYY, h:mm:ss a')
     }
 });
 
