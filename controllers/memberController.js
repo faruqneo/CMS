@@ -2,6 +2,16 @@ const Member = require('../model/member')
 const Role = require('../model/role')
 const moment = require('moment');
 
+function titleCase(str) {
+    var splitStr = str.toLowerCase().split(' ');
+    for (var i = 0; i < splitStr.length; i++) {
+        // You do not need to check if i is larger than splitStr length, as your for does that for you
+        // Assign it back to the array
+        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+    }
+    // Directly return the joined string
+    return splitStr.join(' '); 
+ }
 
 exports.addMember = (req, res) => {
     Role.find({},function(err, roles){
@@ -32,7 +42,7 @@ exports.addNew = (req, res) => {
     else
     {
         let member = new Member();
-        member.name = req.body.name;
+        member.name = titleCase(req.body.name);
         member.email = req.body.email;
         member.role = req.body.role;
         member.password = req.body.password;
