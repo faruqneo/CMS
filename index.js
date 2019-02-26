@@ -164,7 +164,7 @@ function handleMessage(message) {
                 //getting members list through API
                 axios({
                     method: 'post',
-                    url: 'http://localhost:3000/cms/members/name',
+                    url: 'http://localhost:5000/cms/members/name',
                     data: {
                         email: slackemail
                     }
