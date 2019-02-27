@@ -19,11 +19,11 @@
   <div class="form-group">
     <label for="sel1">Role:</label>
     <select class="custom-select" id="exist">
-        <option value={{members.role}}>{{members.role}}</option>
+        <option value={{members.role}}>{{members.role.title}}</option>
     </select>
     <select class="custom-select" name="role" id="new" style="display: none;">
     {{#each roles}}
-      <option value={{title}}>{{title}}</option>
+      <option value={{id}}>{{title}}</option>
     {{/each}}
     </select>
   </div>

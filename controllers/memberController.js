@@ -100,6 +100,7 @@ exports.memberList = (req, res) => {
    
     Member
     .find({})
+    .populate({ path: 'role', select: 'title -_id' })
     .sort('createdAt')
     .skip((perPage * page) - perPage)
     .limit(perPage)
@@ -137,7 +138,7 @@ exports.memberList = (req, res) => {
 
 //detailes view for members
 exports.membersView = (req, res) => {
-    Member.findById(req.params.id,function(err, members){
+    Member.findById(req.params.id).populate({ path: 'role', select: 'title -_id' }).exec(function(err, members){
         Role.find({}).sort('createdAt').exec(function(err, roles){
             res.render('membersView', {
                 members,
@@ -168,6 +169,7 @@ exports.membersUpdate = (req, res) => {
     else
     {
         let members = req.body;
+        console.log(members.role)
         members.updatedAT = moment().format('MMMM Do YYYY, h:mm:ss a');
         let id = {_id:req.params.id}
         //console.log(req.params.id)

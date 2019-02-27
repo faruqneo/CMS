@@ -13,7 +13,7 @@ const MemberSchema = mongoose.Schema({
         unique: true
     },
     role:{
-        type: mongoose.Schema.Types.String,
+        type: mongoose.Schema.Types.ObjectId,
         ref: Role
     },
     password:{
