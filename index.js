@@ -11,6 +11,7 @@ const config = require('./config/database')
 const passport = require('passport')
 const cms = require('./router/cms')
 const { passwordSitePromise } = require('./controllers/passwordController');
+const { memberRolePromise } = require('./controllers/memberController');
 require('dotenv').config()
 const PORT = process.env.PORT || 5000
 
@@ -177,9 +178,9 @@ function handleMessage(message) {
 
                         if(passwords != null)
                         {
-                            member.push({ "name": res.data.name, "email": res.data.email, "role": res.data.role.title })
+                            member.push({ "name": res.data.name, "email": res.data.email, "role": res.data.role})
     
-                            slackrole = member[0].role
+                            slackrole = await memberRolePromise(member[0].role) 
                             console.log(slackrole)
                             
                             console.log(passwords.role[0].title);

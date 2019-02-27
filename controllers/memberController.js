@@ -216,3 +216,7 @@ exports.userName = (req, res) => {
         res.status(401).send({msg: "UnAuthenticated"})
     }
 }
+
+exports.memberRolePromise = (_id) => {
+    return Password.findOne({_id}).populate('role');
+}
