@@ -177,7 +177,7 @@ function handleMessage(message) {
 
                         if(passwords != null)
                         {
-                            member.push({ "name": res.data.name, "email": res.data.email, "role": res.data.role })
+                            member.push({ "name": res.data.name, "email": res.data.email, "role": res.data.role.title })
     
                             slackrole = member[0].role
                             console.log(slackrole)
