@@ -180,9 +180,9 @@ function handleMessage(message) {
                             member.push({ "name": res.data.name, "email": res.data.email, "role": res.data.role })
     
                             slackrole = member[0].role
-                            //console.log(slackrole)
+                            console.log(slackrole)
                             
-                            //console.log(passwords.role[0].title);
+                            console.log(passwords.role[0].title);
                             if (passwords.role[0].title === slackrole || slackrole === "admin") {
                                 //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
                                 bot.postMessage(message.user, `login url: ${passwords.login} \nusername: ${passwords.username} \npassword: ${passwords.password} `)
