@@ -43,21 +43,23 @@ exports.addNew =  (req, res) => {
     }
     else
     {
+       
         let member = new Member();
         member.name = titleCase(req.body.name);
         member.email = req.body.email;
-        member.role = req.body.role;
+        member.role = req.body.role
         member.password = req.body.password;
-        //res.json(member)
-        member.save(function(err){
+        console.log("checking")
+        member.save(async function(err){
             if(err)
             {
                 console.log(err)
             }
             else
             {
-
-            if(member.role === 'admin')
+              let role =await Role.findById(member.role);
+              //console.log(role)
+            if(role.title === 'admin')
             {
                 let user = new User()
                 user.username = member.email;
@@ -89,6 +91,7 @@ exports.addNew =  (req, res) => {
             return res.redirect('/cms/dashboard/:')  
             }
         });
+        
     }
 }
 
@@ -205,6 +208,7 @@ exports.membersDelete = (req, res) => {
 
 //Members list api for bot
 exports.userName = (req, res) => {
+    console.log(req.isPermitted)
     if(req.isPermitted)
     {
         let member = req.body;
@@ -217,6 +221,3 @@ exports.userName = (req, res) => {
     }
 }
 
-exports.memberRolePromise = (_id) => {
-    return Password.findOne({_id}).populate('role');
-}

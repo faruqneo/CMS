@@ -11,7 +11,7 @@ const config = require('./config/database')
 const passport = require('passport')
 const cms = require('./router/cms')
 const { passwordSitePromise } = require('./controllers/passwordController');
-const { memberRolePromise } = require('./controllers/memberController');
+const { RolePromise } = require('./controllers/rolesController');
 require('dotenv').config()
 const PORT = process.env.PORT || 5000
 
@@ -80,6 +80,7 @@ app.use(function(req, res, next){
     } else {
         app.locals.permitted = req.user ? req.user.permitted : false;
     }
+    //console.log(req.permitted)
     next();
 });
 
@@ -180,11 +181,11 @@ function handleMessage(message) {
                         {
                             member.push({ "name": res.data.name, "email": res.data.email, "role": res.data.role})
     
-                            slackrole = await memberRolePromise(member[0].role) 
-                            console.log(slackrole)
+                            slackrole = await RolePromise(member[0].role) 
+                            console.log(slackrole.title)
                             
-                            console.log(passwords.role[0].title);
-                            if (passwords.role[0].title === slackrole || slackrole === "admin") {
+                            //console.log(passwords.role[0].title);
+                            if (passwords.role[0].title === slackrole.title || slackrole.title === "admin") {
                                 //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
                                 bot.postMessage(message.user, `login url: ${passwords.login} \nusername: ${passwords.username} \npassword: ${passwords.password} `)
                             }
@@ -200,7 +201,7 @@ function handleMessage(message) {
 
                 })
                     .catch((err) => {
-                        console.log("err");
+                        console.log(err);
                         bot.postMessage(message.user, 'Please contact to admin.')
                     })
             })

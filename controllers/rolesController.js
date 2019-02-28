@@ -112,3 +112,6 @@ exports.rolesDelete = (req, res) => {
     })
 }
 
+exports.RolePromise = (_id) => {
+    return Roles.findById(_id);
+}
