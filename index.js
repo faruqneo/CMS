@@ -182,9 +182,9 @@ function handleMessage(message) {
                             member.push({ "name": res.data.name, "email": res.data.email, "role": res.data.role})
     
                             slackrole = await RolePromise(member[0].role) 
-                            console.log(slackrole.title)
+                            console.log("User role " +slackrole.title)
                             
-                            //console.log(passwords.role[0].title);
+                            console.log("assign role "+passwords.role[0].title);
                             if (passwords.role[0].title === slackrole.title || slackrole.title === "admin") {
                                 //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
                                 bot.postMessage(message.user, `login url: ${passwords.login} \nusername: ${passwords.username} \npassword: ${passwords.password} `)
