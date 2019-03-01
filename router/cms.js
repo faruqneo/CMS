@@ -4,6 +4,7 @@ const authController = require('../controllers/authController')
 const rolesController = require('../controllers/rolesController')
 const membersController = require('../controllers/memberController')
 const passwordController = require('../controllers/passwordController')
+const signupController = require('../controllers/signupController')
 const Switch1 = require('../model/switch')
 const router = express.Router()
 
@@ -18,6 +19,12 @@ router.use(function timeLog(req, res, next) {
 router.get('/', (req, res) => {
     res.render('home', { layout: false })
 })
+
+router.get('/signup', (req, res) => {
+    res.render('signup', { layout: false })
+})
+
+router.post('/signup', signupController.signup)
 
 //Index page
 router.post('/save-check', async (req, res) => {
@@ -45,6 +52,7 @@ router.post('/save-check', async (req, res) => {
 
 //Login router
 router.post('/login', authController.login)
+
 
 
 //Memeber routers
