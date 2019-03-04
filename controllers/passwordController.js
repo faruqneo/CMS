@@ -182,6 +182,13 @@ exports.passwordSite = (req, res) => {
 }
 
 
-exports.passwordSitePromise = (website) => {
-    return Password.findOne({website}).populate('role');
+exports.passwordSitePromise = (website, slackrole) => {
+    //  console.log("slackrole"+slackrole)
+    return Password.findOne({website}).populate({
+        path:'role',
+        match: { _id: { $eq: slackrole._id }},
+        // $match: { _id: slackrole._id },
+        select: 'title -_id'
+    });
 }
+

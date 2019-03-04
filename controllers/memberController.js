@@ -214,6 +214,7 @@ exports.userName = (req, res) => {
         let member = req.body;
             Member.findOne(member, function(err, data)
             {
+                // console.log(data)
               res.send(data)
             })
     } else {

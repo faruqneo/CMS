@@ -147,7 +147,7 @@ bot.on('message', (data) => {
     }
     if (data.text.startsWith('<@UGGR0QUDR>'))
         handleMessage(data)
-
+    
 })
 
 
@@ -175,28 +175,38 @@ function handleMessage(message) {
                 }).then(async (res) => {
                    // console.log(res)
                     try {
-                        let passwords = await passwordSitePromise(website);
-
+                        member.push({ "name": res.data.name, "email": res.data.email, "role": res.data.role})
+    
+                        slackrole = await RolePromise(member[0].role)
+                        // console.log(slackrole)
+                        // console.log("------------")
+                        let passwords = await passwordSitePromise(website, slackrole);
+                        // console.log(passwords)
                         if(passwords != null)
                         {
-                            member.push({ "name": res.data.name, "email": res.data.email, "role": res.data.role})
-    
-                            slackrole = await RolePromise(member[0].role) 
+
                             console.log("User role " +slackrole.title)
                             
-                            console.log("assign role "+passwords.role[0].title);
+                            console.log("assign role "+passwords.role);
+                            //console.log(passwords.role.length)
+                            
                             if (passwords.role[0].title === slackrole.title || slackrole.title === "admin") {
+                                //
                                 //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
                                 bot.postMessage(message.user, `login url: ${passwords.login} \nusername: ${passwords.username} \npassword: ${passwords.password} `)
                             }
-                            else {
+                            else if(passwords.role.length === 0){
                                 bot.postMessage(message.user, 'You have no privilages.')
+                            }
+                            else {
+                                // bot.postMessage(message.user, 'You have no privilages.')
                             }
                         }
                         else
                             {bot.postMessage(message.user, 'This website is not in list.');}
                     } catch (error) {
-                        throw error
+                        console.log(error);
+                        bot.postMessage(message.user, 'You have no privilages.')
                     }
 
                 })

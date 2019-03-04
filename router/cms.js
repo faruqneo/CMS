@@ -20,11 +20,11 @@ router.get('/', (req, res) => {
     res.render('home', { layout: false })
 })
 
-router.get('/signup', (req, res) => {
-    res.render('signup', { layout: false })
-})
+// router.get('/signup', (req, res) => {
+//     res.render('signup', { layout: false })
+// })
 
-router.post('/signup', signupController.signup)
+// router.post('/signup', signupController.signup)
 
 //Index page
 router.post('/save-check', async (req, res) => {
