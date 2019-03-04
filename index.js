@@ -178,7 +178,7 @@ function handleMessage(message) {
                         member.push({ "name": res.data.name, "email": res.data.email, "role": res.data.role})
     
                         slackrole = await RolePromise(member[0].role)
-                        // console.log(slackrole)
+                        //console.log(slackrole)
                         // console.log("------------")
                         let passwords = await passwordSitePromise(website, slackrole);
                         // console.log(passwords)
@@ -190,23 +190,22 @@ function handleMessage(message) {
                             console.log("assign role "+passwords.role);
                             //console.log(passwords.role.length)
                             
-                            if (passwords.role[0].title === slackrole.title || slackrole.title === "admin") {
-                                //
+                            if (passwords.role[0] === slackrole.title || slackrole.title == "admin") {
                                 //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
                                 bot.postMessage(message.user, `login url: ${passwords.login} \nusername: ${passwords.username} \npassword: ${passwords.password} `)
                             }
                             else if(passwords.role.length === 0){
-                                bot.postMessage(message.user, 'You have no privilages.')
+                               bot.postMessage(message.user, 'You have no privilages.')
                             }
                             else {
-                                // bot.postMessage(message.user, 'You have no privilages.')
+                                // code
                             }
                         }
                         else
                             {bot.postMessage(message.user, 'This website is not in list.');}
                     } catch (error) {
                         console.log(error);
-                        bot.postMessage(message.user, 'You have no privilages.')
+                        // bot.postMessage(message.user, 'You have no privilages.')
                     }
 
                 })
