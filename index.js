@@ -186,17 +186,26 @@ function handleMessage(message) {
                         {
 
                             console.log("User role " +slackrole.title)
+                            let rolePas = '';
+
+                            if(passwords.role.length != 0){
+                                rolePas = passwords.role;
+                                console.log("_____________________")
+                                console.log(rolePas[0].title);
+                                console.log(passwords.role);
+                                console.log("_________________")
+                            }else if(passwords.role.length == 0){
+                                bot.postMessage(message.user, 'You have no privilages.')
+                             }
                             
-                            console.log("assign role "+passwords.role);
-                            //console.log(passwords.role.length)
                             
-                            if (passwords.role[0] === slackrole.title || slackrole.title == "admin") {
+                            console.log("assign role " + rolePas[0].title);
+                            
+                            if (rolePas[0].title === slackrole.title || slackrole.title == "admin") {
                                 //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
                                 bot.postMessage(message.user, `login url: ${passwords.login} \nusername: ${passwords.username} \npassword: ${passwords.password} `)
                             }
-                            else if(passwords.role.length === 0){
-                               bot.postMessage(message.user, 'You have no privilages.')
-                            }
+                            
                             else {
                                 // code
                             }
