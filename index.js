@@ -9,6 +9,7 @@ const expressValidator = require('express-validator')
 const path = require('path')
 const config = require('./config/database')
 const passport = require('passport')
+const CryptoJS = require("crypto-js")
 const cms = require('./router/cms')
 const { passwordSitePromise } = require('./controllers/passwordController');
 const { RolePromise } = require('./controllers/rolesController');
@@ -35,6 +36,7 @@ app.use(bodyParser.json())
 
 //setting public folder
 app.use("/public", express.static(path.join(__dirname, 'public')));
+
 
 //setting up view pages
 app.engine('handlebars', exphbs({
@@ -203,7 +205,12 @@ function handleMessage(message) {
                             
                             if (rolePas[0].title === slackrole.title || slackrole.title == "admin") {
                                 //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
-                                bot.postMessage(message.user, `login url: ${passwords.login} \nusername: ${passwords.username} \npassword: ${passwords.password} `)
+
+                                // Decrypt
+                                var bytes  = CryptoJS.AES.decrypt(passwords.password.toString(), 'secret key 123');
+                                var plaintext = bytes.toString(CryptoJS.enc.Utf8);
+
+                                bot.postMessage(message.user, `login url: ${passwords.login} \nusername: ${passwords.username} \npassword: ${plaintext} `)
                             }
                             
                             else {

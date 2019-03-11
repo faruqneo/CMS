@@ -1,6 +1,7 @@
-const Password = require('../model/password')
-const Role = require('../model/role')
+const Password = require('../model/password');
+const Role = require('../model/role');
 const moment = require('moment');
+const CryptoJS = require("crypto-js");
 
 //Load password list
 exports.passwordList = async (req, res) => {
@@ -70,7 +71,8 @@ exports.addNew = async (req, res) => {
         }
         password.role = role_ids;
         password.username = username;
-        password.password = passWord;
+        /* Password Encryption */
+        password.password = CryptoJS.AES.encrypt(passWord, 'secret key 123');
         //console.log(role_ids)
         password.save(function(err){
             if(err)
@@ -90,9 +92,14 @@ exports.addNew = async (req, res) => {
 exports.passwordsView = async (req, res) => {
     try {
     let passwords = await Password.findById(req.params.id).populate({ path: 'role', select: 'title -_id' });
+    /* Password Decryption */
+    let bytes  = CryptoJS.AES.decrypt(passwords.password.toString(), 'secret key 123');
+    let plaintext = bytes.toString(CryptoJS.enc.Utf8);
+
     let roles = await Role.find({});
     res.render('passwordsView',{
         passwords,
+        plaintext,
         encodedJson : encodeURIComponent(JSON.stringify(roles)),
         roles
     })

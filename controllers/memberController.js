@@ -3,6 +3,7 @@ const Role = require('../model/role')
 const User = require('../model/user')
 const moment = require('moment')
 const bcrypt = require('bcryptjs')
+const CryptoJS = require("crypto-js");
 
 function titleCase(str) {
     var splitStr = str.toLowerCase().split(' ');
@@ -48,7 +49,8 @@ exports.addNew =  (req, res) => {
         member.name = titleCase(req.body.name);
         member.email = req.body.email;
         member.role = req.body.role
-        member.password = req.body.password;
+        /* Password Encryption */
+        member.password = CryptoJS.AES.encrypt(req.body.password, 'secret key 123');
         console.log("checking")
         member.save(async function(err){
             if(err)
@@ -63,9 +65,14 @@ exports.addNew =  (req, res) => {
             {
                 let user = new User()
                 user.username = member.email;
-                //console.log(member.password)
+                console.log("member.password");
+                console.log("-------------");
+                console.log(member.password);
+                console.log("-------------");
                 bcrypt.genSalt(10, function(err, salt){
-                    bcrypt.hash(member.password, salt, async function(err, hash){
+                    let bytes  = CryptoJS.AES.decrypt(member.password.toString(), 'secret key 123');
+                    let plaintext = bytes.toString(CryptoJS.enc.Utf8);
+                    bcrypt.hash(plaintext, salt, async function(err, hash){
                        try {
                         if(err)
                         {
@@ -142,9 +149,13 @@ exports.memberList = (req, res) => {
 //detailes view for members
 exports.membersView = (req, res) => {
     Member.findById(req.params.id).populate({ path: 'role', select: 'title -_id' }).exec(function(err, members){
+    /* Password Decryption */
+    let bytes  = CryptoJS.AES.decrypt(members.password.toString(), 'secret key 123');
+    let plaintext = bytes.toString(CryptoJS.enc.Utf8);
         Role.find({}).sort('createdAt').exec(function(err, roles){
             res.render('membersView', {
                 members,
+                plaintext,
                 roles
             });
         })
@@ -172,18 +183,60 @@ exports.membersUpdate = (req, res) => {
     else
     {
         let members = req.body;
-        console.log(members.role)
+        let plantext = req.body.password;
+        members.password = CryptoJS.AES.encrypt(plantext, 'secret key 123');
+        console.log(members.password);
         members.updatedAT = moment().format('MMMM Do YYYY, h:mm:ss a');
         let id = {_id:req.params.id}
         //console.log(req.params.id)
-        Member.updateOne(id, members,function(err){
+        Member.updateOne(id, members,async function(err){
             if(err)
             {
                 console.log(err)
             }
             else
-            {
-                req.flash('success', 'Member Update')
+            {   
+                
+                try {
+                    let role =await Role.findById(members.role);
+                    console.log(role)
+                  if(role.title === 'admin')
+                  {
+                      let user = new User()
+                      user.username = members.email;
+                      console.log("members.password");
+                      console.log("--------------------");
+                      console.log(members.password);
+                      console.log("--------------------");
+                      bcrypt.genSalt(10, function(err, salt){
+                          let bytes  = CryptoJS.AES.decrypt(members.password.toString(), 'secret key 123');
+                          let plaintext = bytes.toString(CryptoJS.enc.Utf8);
+                          console.log("plantext");
+                          console.log("--------------------");
+                          console.log(plaintext);
+                          console.log("--------------------");
+                          bcrypt.hash(plaintext, salt, async function(err, hash){
+                             try {
+                              
+                              user.password = await hash;
+                             // console.log({user});
+                              await user.save()
+                              //console.log("check")
+                              if(err)
+                              {
+                                  console.log(err)
+                                  return;
+                              }
+                               
+                             } catch (error) {
+                                 throw error
+                             }
+                          });
+                      });
+                  }
+                } catch (error) {
+                    console.log(error)
+                }
                 res.redirect('/cms/dashboard/1')
             }
         })
