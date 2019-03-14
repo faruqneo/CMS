@@ -3,6 +3,7 @@ const Role = require('../model/role')
 const User = require('../model/user')
 const moment = require('moment')
 const bcrypt = require('bcryptjs')
+const CryptoJS = require("crypto-js");
 
 function titleCase(str) {
     var splitStr = str.toLowerCase().split(' ');
@@ -12,7 +13,7 @@ function titleCase(str) {
         splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
     }
     // Directly return the joined string
-    return splitStr.join(' '); 
+    return splitStr.join(' ').trim(); 
  }
 
 exports.addMember = (req, res) => {
@@ -48,7 +49,8 @@ exports.addNew =  (req, res) => {
         member.name = titleCase(req.body.name);
         member.email = req.body.email;
         member.role = req.body.role
-        member.password = req.body.password;
+        /* Password Encryption */
+        member.password = CryptoJS.AES.encrypt(req.body.password, 'secret key 123');
         console.log("checking")
         member.save(async function(err){
             if(err)
@@ -63,9 +65,11 @@ exports.addNew =  (req, res) => {
             {
                 let user = new User()
                 user.username = member.email;
-                //console.log(member.password)
+                
                 bcrypt.genSalt(10, function(err, salt){
-                    bcrypt.hash(member.password, salt, async function(err, hash){
+                    let bytes  = CryptoJS.AES.decrypt(member.password.toString(), 'secret key 123');
+                    let plaintext = bytes.toString(CryptoJS.enc.Utf8);
+                    bcrypt.hash(plaintext, salt, async function(err, hash){
                        try {
                         if(err)
                         {
@@ -156,7 +160,7 @@ exports.membersUpdate = (req, res) => {
     req.checkBody('name', 'Name is required').notEmpty();
     req.checkBody('email', 'Email is required').notEmpty();
     req.checkBody('role', 'Role is required').notEmpty();
-    req.checkBody('password', 'Password is required').notEmpty();
+    
 
     let errors = req.validationErrors();
     
@@ -172,18 +176,59 @@ exports.membersUpdate = (req, res) => {
     else
     {
         let members = req.body;
-        console.log(members.role)
+        // let plantext = req.body.password;
+        // members.password = CryptoJS.AES.encrypt(plantext, 'secret key 123');
+        // console.log(members.password);
         members.updatedAT = moment().format('MMMM Do YYYY, h:mm:ss a');
         let id = {_id:req.params.id}
         //console.log(req.params.id)
-        Member.updateOne(id, members,function(err){
+        Member.updateOne(id, members,async function(err){
             if(err)
             {
                 console.log(err)
             }
             else
-            {
-                req.flash('success', 'Member Update')
+            {   
+                
+                try {
+                    let role =await Role.findById(members.role);
+                    console.log(role)
+                  if(role.title === 'admin')
+                  {
+                      let user = new User()
+                      user.username = members.email;
+                    let member =await Member.findById(id);
+                    // console.log(member.password);
+                    // return;
+                      bcrypt.genSalt(10, function(err, salt){
+                          let bytes  = CryptoJS.AES.decrypt(member.password.toString(), 'secret key 123');
+                          let plaintext = bytes.toString(CryptoJS.enc.Utf8);
+                          console.log("plantext");
+                          console.log("--------------------");
+                          console.log(plaintext);
+                          console.log("--------------------");
+                          bcrypt.hash(plaintext, salt, async function(err, hash){
+                             try {
+                              
+                              user.password = await hash;
+                             // console.log({user});
+                              await user.save()
+                              //console.log("check")
+                              if(err)
+                              {
+                                  console.log(err)
+                                  return;
+                              }
+                               
+                             } catch (error) {
+                                 throw error
+                             }
+                          });
+                      });
+                  }
+                } catch (error) {
+                    console.log(error)
+                }
                 res.redirect('/cms/dashboard/1')
             }
         })
@@ -222,3 +267,6 @@ exports.userName = (req, res) => {
     }
 }
 
+exports.MemberPromise = (_id) => {
+    return Member.findById(_id);
+}

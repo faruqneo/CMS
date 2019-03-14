@@ -1,6 +1,18 @@
-const Password = require('../model/password')
-const Role = require('../model/role')
-const moment = require('moment');
+const Password = require('../model/password');
+const Role = require('../model/role');
+const moment = require('moment');   
+
+// function for name
+function titleCase(str) {
+    var splitStr = str.toLowerCase().split(' ');
+    for (var i = 0; i < splitStr.length; i++) {
+        // You do not need to check if i is larger than splitStr length, as your for does that for you
+        // Assign it back to the array
+        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+    }
+    // Directly return the joined string
+    return splitStr.join(' ').trim(); 
+ }
 
 //Load password list
 exports.passwordList = async (req, res) => {
@@ -26,11 +38,14 @@ exports.addPassword = (req, res) => {
 
 //adding new passwords
 exports.addNew = async (req, res) => {
-    req.checkBody('website', 'Website is required').notEmpty();
-    req.checkBody('login', 'Login is required').notEmpty();
+    req.checkBody('project', 'Project is required').notEmpty();
+    req.checkBody('branch', 'Branch is required').notEmpty();
+    req.checkBody('bitbucket_link', 'Bitbucket Link is required').notEmpty();
+    req.checkBody('client_name', 'Client Name is required').notEmpty();
+    req.checkBody('manager', 'Manager is required').notEmpty();
     req.checkBody('role', 'Role is required').notEmpty();
-    req.checkBody('username', 'username is required').notEmpty();
-    req.checkBody('passWord', 'Password is required').notEmpty();
+    req.checkBody('domains', 'Domain is required').notEmpty();
+    req.checkBody('ec2', 'EC2 is required').notEmpty();
 
     let errors = req.validationErrors();
 
@@ -46,9 +61,15 @@ exports.addNew = async (req, res) => {
     else
     {
         let password = new Password();
-        let { website, login, role, username, passWord } = req.body;
-        password.website = website;
-        password.login = login;
+        let { project, branch, bitbucket_link, client_name, manager, role, domains, ec2, pem } = req.body;
+        password.project = project;
+        password.branch = branch;
+        password.bitbucket_link= bitbucket_link;
+        password.client_name = titleCase(client_name);
+        password.manager = titleCase(manager);
+        password.domains = domains;
+        password.ec2 = ec2;
+        password.pem = pem;
         let roles = role.split(',');
         //console.log(roles)
         let role_ids = [];
@@ -69,13 +90,14 @@ exports.addNew = async (req, res) => {
 
         }
         password.role = role_ids;
-        password.username = username;
-        password.password = passWord;
-        //console.log(role_ids)
         password.save(function(err){
             if(err)
             {
-                console.log(err)
+                res.render('add_passwords', {
+                    encodedJson : encodeURIComponent(JSON.stringify(roles)),
+                    roles,
+                    error: "This project is already exist."
+                })
             }
             else
             {
@@ -90,6 +112,8 @@ exports.addNew = async (req, res) => {
 exports.passwordsView = async (req, res) => {
     try {
     let passwords = await Password.findById(req.params.id).populate({ path: 'role', select: 'title -_id' });
+    /* Password Decryption */
+
     let roles = await Role.find({});
     res.render('passwordsView',{
         passwords,
@@ -103,11 +127,15 @@ exports.passwordsView = async (req, res) => {
 
 //update for passwords
 exports.passwordsUpdate = async (req, res) => {
-    req.checkBody('website', 'website is required').notEmpty();
-    req.checkBody('login', 'login is required').notEmpty();
+    req.checkBody('project', 'project is required').notEmpty();
+    req.checkBody('branch', 'branch is required').notEmpty();
+    req.checkBody('bitbucket_link', 'bitbucket_link is required').notEmpty();
+    req.checkBody('client_name', 'client_name is required').notEmpty();
+    req.checkBody('manager', 'manager is required').notEmpty();
     req.checkBody('role', 'role is required').notEmpty();
-    req.checkBody('username', 'username is required').notEmpty();
-    req.checkBody('password', 'password is required').notEmpty();
+    req.checkBody('domains', 'domains is required').notEmpty();
+    req.checkBody('ec2', 'ec2 is required').notEmpty();
+    req.checkBody('pem', 'pem is required').notEmpty();
 
     let errors = req.validationErrors();
     
@@ -121,6 +149,7 @@ exports.passwordsUpdate = async (req, res) => {
     {
         let passwords = req.body;
         passwords.updatedAT = moment().format('MMMM Do YYYY, h:mm:ss a');
+        // passwords.password = CryptoJS.AES.encrypt(passwords.password, 'secret key 123');
         let id = {_id:req.params.id}
         let roles = passwords.role.split(',');
         let role_ids = [];
@@ -145,7 +174,7 @@ exports.passwordsUpdate = async (req, res) => {
         Password.updateOne(id, passwords,function(err){
             if(err)
             {
-                console.log(err)
+                console.log("err")
             }
             else
             {
@@ -182,9 +211,9 @@ exports.passwordSite = (req, res) => {
 }
 
 
-exports.passwordSitePromise = (website, slackrole) => {
+exports.passwordSitePromise = (project, slackrole) => {
     //  console.log("slackrole"+slackrole)
-    return Password.findOne({website}).populate({
+    return Password.findOne({project}).populate({
         path:'role',
         match: { _id: { $eq: slackrole._id }},
         // $match: { _id: slackrole._id },

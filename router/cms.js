@@ -4,6 +4,7 @@ const authController = require('../controllers/authController')
 const rolesController = require('../controllers/rolesController')
 const membersController = require('../controllers/memberController')
 const passwordController = require('../controllers/passwordController')
+const individualController = require('../controllers/individualController')
 const signupController = require('../controllers/signupController')
 const Switch1 = require('../model/switch')
 const router = express.Router()
@@ -71,6 +72,14 @@ router.post('/dashboard/passwords/new_add', authController.ensureAthenticated, p
 router.get('/dashboard/password/edit/:id', authController.ensureAthenticated, passwordController.passwordsView)
 router.post('/dashboard/update/passwords/:id', authController.ensureAthenticated, passwordController.passwordsUpdate)
 router.get('/dashboard/password/delete/:id', authController.ensureAthenticated, passwordController.passwordsDelete)
+
+//Individual routers
+router.get('/dashboard/individual/list', authController.ensureAthenticated, individualController.individualList)
+router.get('/dashboard/individual/add', authController.ensureAthenticated, individualController.addIndividual)
+router.post('/dashboard/individual/new_add', authController.ensureAthenticated, individualController.addNew)
+router.get('/dashboard/individual/edit/:id', authController.ensureAthenticated, individualController.individualsView)
+router.post('/dashboard/update/individuals/:id', authController.ensureAthenticated, individualController.individualsUpdate)
+router.get('/dashboard/individual/delete/:id', authController.ensureAthenticated, individualController.individualsDelete)
 
 //Role routers
 router.get('/dashboard/roles/list', authController.ensureAthenticated, rolesController.rolesList)

@@ -13,18 +13,19 @@
     </div>
 {{/if}}
 <br>
-<h4>Set new projects</h4>
-<form action="/cms/dashboard/passwords/new_add" method="POST">
+
+<h4>Set new project</h4>
+<form action="/cms/dashboard/individual/new_add" method="POST">
   <div class="form-group">
-    <label for="site">Project Name:</label>
+    <label for="project">Project Name:</label>
     <input type="text" class="form-control" name="project">
   </div>
     <div class="form-group">
-    <label for="site">Branch:</label>
+    <label for="branch">Branch:</label>
     <input type="text" class="form-control" name="branch">
   </div>
     <div class="form-group">
-    <label for="site">Bitbucket_link:</label>
+    <label for="bitbucket_link">Bitbucket_link:</label>
     <div class="input-group mb-3">
     <div class="input-group-prepend">
     <span class="input-group-text" id="basic-addon3">https://</span>
@@ -33,26 +34,24 @@
     </div>
   </div>
       <div class="form-group">
-    <label for="site">Client Name:</label>
+    <label for="client_name">Client Name:</label>
     <input type="text" class="form-control" name="client_name">
   </div>
   <div class="form-group">
-    <label for="site">Account Manager:</label>
+    <label for="manager">Account Manager:</label>
     <input type="text" class="form-control" name="manager">
   </div>
   <div class="form-group">
-    <div class="demo">
-      <label for="site">Roles:</label>
-      <input type="text" value="test" name="role" class="demo-default selectized" id="input-tags" tabindex="-1" style="display: block;">
-    </div>
-  {{!-- <select multiple data-role="tagsinput" class="custom-select" name="role">
-   {{#each roles}}
-    <option value={{title}}>{{title}}</option>
-    {{/each}}
-</select> --}}
+    <label for="member">Developer:</label>
+    <select class="custom-select" name="member">
+        <option value="0"> </option>
+      {{#each members}}
+        <option value={{id}}>{{name}}</option>
+      {{/each}}
+    </select>
   </div>
       <div class="form-group">
-    <label for="site">Respective Domains:</label>
+    <label for="domains">Respective Domains:</label>
     <div class="input-group mb-3">
     <div class="input-group-prepend">
     <span class="input-group-text" id="basic-addon3">https://</span>
@@ -61,7 +60,7 @@
     </div>
   </div>
         <div class="form-group">
-    <label for="site">EC2 SSH Url:</label>
+    <label for="ec2">EC2 SSH Url:</label>
     <div class="input-group mb-3">
     <div class="input-group-prepend">
     <span class="input-group-text" id="basic-addon3">https://</span>
@@ -70,7 +69,7 @@
     </div>
   </div>
     <div class="form-group">
-    <label for="username">EC2 Pem File Name:</label>
+    <label for="pem">EC2 Pem File Name:</label>
     <input type="text" class="form-control" name="pem" placeholder="Ex: filename.pem">
   </div>
 
@@ -84,31 +83,5 @@
     <input type="password" class="form-control" name="passWord" id="password"><i class="far fa-eye" onclick="showPassword();"></i>
   </div> --}}
   <button type="submit" class="btn btn-primary">Submit</button>
-  <a href="/cms/dashboard/passwords/list"><button type="button" class="btn btn-light">Back</button></a>
+  <a href="/cms/dashboard/individual/list"><button type="button" class="btn btn-light">Back</button></a>
 </form>
-
-    <script>
-        var decodedJson = decodeURIComponent("{{encodedJson}}");
-        var jsonObj = JSON.parse(JSON.parse(JSON.stringify(decodedJson)));
-        var data = jsonObj;
-        var items = data.map(function(x) { return { item: x.title }; });
-
-        $('#input-tags').selectize({
-            delimiter: ',',
-            persist: false,
-            maxItems: 4,
-            options: items,
-            labelField: "item",
-            valueField: "item",
-            sortField: 'item',
-            searchField: 'item'
-        });
-            function showPassword() {
-        var x = document.getElementById("password");
-        if (x.type === "password") {
-            x.type = "text";
-        } else {
-            x.type = "password";
-        }
-    }
-    </script>
