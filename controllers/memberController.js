@@ -13,7 +13,7 @@ function titleCase(str) {
         splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
     }
     // Directly return the joined string
-    return splitStr.join(' '); 
+    return splitStr.join(' ').trim(); 
  }
 
 exports.addMember = (req, res) => {
@@ -65,10 +65,7 @@ exports.addNew =  (req, res) => {
             {
                 let user = new User()
                 user.username = member.email;
-                console.log("member.password");
-                console.log("-------------");
-                console.log(member.password);
-                console.log("-------------");
+                
                 bcrypt.genSalt(10, function(err, salt){
                     let bytes  = CryptoJS.AES.decrypt(member.password.toString(), 'secret key 123');
                     let plaintext = bytes.toString(CryptoJS.enc.Utf8);
@@ -149,13 +146,9 @@ exports.memberList = (req, res) => {
 //detailes view for members
 exports.membersView = (req, res) => {
     Member.findById(req.params.id).populate({ path: 'role', select: 'title -_id' }).exec(function(err, members){
-    /* Password Decryption */
-    let bytes  = CryptoJS.AES.decrypt(members.password.toString(), 'secret key 123');
-    let plaintext = bytes.toString(CryptoJS.enc.Utf8);
         Role.find({}).sort('createdAt').exec(function(err, roles){
             res.render('membersView', {
                 members,
-                plaintext,
                 roles
             });
         })
@@ -167,7 +160,7 @@ exports.membersUpdate = (req, res) => {
     req.checkBody('name', 'Name is required').notEmpty();
     req.checkBody('email', 'Email is required').notEmpty();
     req.checkBody('role', 'Role is required').notEmpty();
-    req.checkBody('password', 'Password is required').notEmpty();
+    
 
     let errors = req.validationErrors();
     
@@ -183,9 +176,9 @@ exports.membersUpdate = (req, res) => {
     else
     {
         let members = req.body;
-        let plantext = req.body.password;
-        members.password = CryptoJS.AES.encrypt(plantext, 'secret key 123');
-        console.log(members.password);
+        // let plantext = req.body.password;
+        // members.password = CryptoJS.AES.encrypt(plantext, 'secret key 123');
+        // console.log(members.password);
         members.updatedAT = moment().format('MMMM Do YYYY, h:mm:ss a');
         let id = {_id:req.params.id}
         //console.log(req.params.id)
@@ -204,12 +197,11 @@ exports.membersUpdate = (req, res) => {
                   {
                       let user = new User()
                       user.username = members.email;
-                      console.log("members.password");
-                      console.log("--------------------");
-                      console.log(members.password);
-                      console.log("--------------------");
+                    let member =await Member.findById(id);
+                    // console.log(member.password);
+                    // return;
                       bcrypt.genSalt(10, function(err, salt){
-                          let bytes  = CryptoJS.AES.decrypt(members.password.toString(), 'secret key 123');
+                          let bytes  = CryptoJS.AES.decrypt(member.password.toString(), 'secret key 123');
                           let plaintext = bytes.toString(CryptoJS.enc.Utf8);
                           console.log("plantext");
                           console.log("--------------------");
@@ -275,3 +267,6 @@ exports.userName = (req, res) => {
     }
 }
 
+exports.MemberPromise = (_id) => {
+    return Member.findById(_id);
+}

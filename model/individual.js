@@ -1,12 +1,11 @@
-const mongoose = require('mongoose')
-const Roles = require('./role')
+const mongoose = require('mongoose');
+const Member = require('./member')
 const moment = require('moment');
 
-const PasswordSchema = mongoose.Schema({
+const IndividualSchema = mongoose.Schema({
     project:{
         type: String,
-        require: true,
-        unique: true
+        require: true
     },
     branch:{
         type: String,
@@ -36,10 +35,10 @@ const PasswordSchema = mongoose.Schema({
         type: String,
         require: true         
     },
-    role:[{
+    member:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: Roles
-    }],
+        ref: Member
+    },
     createdAt:{
         type: String,
         default: moment().format('MMMM Do YYYY, h:mm:ss a')
@@ -50,4 +49,4 @@ const PasswordSchema = mongoose.Schema({
     }
 })
 
-let Password = module.exports = mongoose.model('Passwords', PasswordSchema);
+let Individual = module.exports = mongoose.model('Individuals', IndividualSchema);

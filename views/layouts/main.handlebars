@@ -36,12 +36,7 @@
   </script>
 
   <style>
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 60px;
-      height: 34px;
-    }
+
 
     .switch input {
       opacity: 0;
@@ -207,7 +202,13 @@
             <li class="nav-item">
               <a class="nav-link" href="/cms/dashboard/passwords/list">
                 <span data-feather="shopping-cart"></span>
-                <i class="fas fa-key"></i> Manage Passwords
+                <i class="fas fa-pencil-ruler"></i> Manage Projects
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href='/cms/dashboard/individual/list'>
+                <span data-feather="file"></span>
+                <i class="fas fa-user"></i> Manage Individual
               </a>
             </li>
             <li class="nav-item">
@@ -217,10 +218,12 @@
               </a>
             </li>
           </ul>
+          
           <label class="switch">
             <input id="chatCheck" type="checkbox">
             <div class="slider"></div>
           </label>
+          
           {{!-- {{#if permitted}}permitted{{/if}} --}}
 
         </div>

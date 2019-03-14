@@ -1,0 +1,68 @@
+{{#if errors}}
+    {{#each errors}}
+        <div class="alert alert-warning">
+        <strong>Warning!</strong> {{msg}}.
+        </div>
+    {{/each}}
+{{/if}}
+<br>
+<h2>Update Individuals</h2>   
+<form action="/cms/dashboard/update/individuals/{{individual.id}}" method="POST">
+    <div class="form-group">
+        <label for="project">Project Name:</label>
+        <input type="text" class="form-control" name="project" value="{{individual.project}}">
+    </div>
+    <div class="form-group">
+    <label for="branch">Branch:</label>
+    <input type="text" class="form-control" name="branch" value="{{individual.branch}}">
+  </div>
+    <div class="form-group">
+    <label for="bitbucket_link">Bitbucket_link:</label>
+    <input type="text" class="form-control" name="bitbucket_link" value="{{individual.bitbucket_link}}">
+  </div>
+       <div class="form-group">
+    <label for="client_name">Client Name:</label>
+    <input type="text" class="form-control" name="client_name" value="{{individual.client_name}}">
+  </div>
+  <div class="form-group">
+    <label for="manager">Account Manager:</label>
+    <input type="text" class="form-control" name="manager" value="{{individual.manager}}">
+  </div>
+  <div class="form-group">
+    <label for="member">Developer:</label>
+    <select class="custom-select" id="exist">
+        <option value={{individual.member._id}}>{{individual.member.name}}</option>
+    </select>
+    <select class="custom-select" name="member" id="new" style="display: none;">
+    {{#each members}}
+      <option value={{id}}>{{name}}</option>
+    {{/each}}
+    </select>
+  </div>
+    <div class="form-group">
+    <label for="domains">Respective Domains:</label>
+    <input type="text" class="form-control" name="domains" value="{{individual.domains}}">
+  </div>
+      <div class="form-group">
+    <label for="ec2">EC2 SSH Url:</label>
+    <input type="text" class="form-control" name="ec2" value="{{individual.ec2}}">
+  </div>
+    <div class="form-group">
+    <label for="pem">EC2 Pem File Name:</label>
+    <input type="text" class="form-control" name="pem" value="{{individual.pem}}">
+  </div>
+
+
+  <button type="submit" class="btn btn-primary">submit</button>
+  <a href="/cms/dashboard/individual/list"><button type="button" class="btn btn-default">back</button></a>
+</form>
+
+<script>
+$(document).ready(function(){
+  $('#exist').focus(function(){
+    $('#new').show();
+    $('#exist').remove();
+  });
+});
+
+</script>

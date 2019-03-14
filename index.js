@@ -9,10 +9,11 @@ const expressValidator = require('express-validator')
 const path = require('path')
 const config = require('./config/database')
 const passport = require('passport')
-const CryptoJS = require("crypto-js")
 const cms = require('./router/cms')
 const { passwordSitePromise } = require('./controllers/passwordController');
+const { individualSitePromise } = require('./controllers/individualController');
 const { RolePromise } = require('./controllers/rolesController');
+const { MemberPromise } = require('./controllers/memberController');
 require('dotenv').config()
 const PORT = process.env.PORT || 5000
 
@@ -20,13 +21,9 @@ const PORT = process.env.PORT || 5000
 const app = express()
 
 //connection code for mongodb
-mongoose.connect(config.database, { useNewUrlParser: true });
-let db = mongoose.connection;
-
-//checking for connection
-db.once('open', function () {
-    console.log("connected with mongodb")
-});
+mongoose.connect(config.database, { useNewUrlParser: true })
+.then(() => console.log("connected with mongodb"))
+.catch(error => console.log(error));
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -160,7 +157,7 @@ function handleMessage(message) {
     console.log(lower)
     if (lower.includes('show password for')) {
         let slackrequest = lower.split(' ')
-        let website = slackrequest[4];
+        let project = slackrequest[4];
         bot.getUserById(message.user)
             .then((details) => {
                 let slackemail = details.profile.email
@@ -182,7 +179,7 @@ function handleMessage(message) {
                         slackrole = await RolePromise(member[0].role)
                         //console.log(slackrole)
                         // console.log("------------")
-                        let passwords = await passwordSitePromise(website, slackrole);
+                        let passwords = await passwordSitePromise(project, slackrole);
                         // console.log(passwords)
                         if(passwords != null)
                         {
@@ -206,11 +203,9 @@ function handleMessage(message) {
                             if (rolePas[0].title === slackrole.title || slackrole.title == "admin") {
                                 //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
 
-                                // Decrypt
-                                var bytes  = CryptoJS.AES.decrypt(passwords.password.toString(), 'secret key 123');
-                                var plaintext = bytes.toString(CryptoJS.enc.Utf8);
+                                
 
-                                bot.postMessage(message.user, `login url: ${passwords.login} \nusername: ${passwords.username} \npassword: ${plaintext} `)
+                                bot.postMessage(message.user, `Project Name: ${passwords.project} \nBranch: ${passwords.branch} \nRepository: https://${passwords.bitbucket_link} \nClient Name: ${passwords.client_name} \nManager: ${passwords.manager} \nDomains: https://${passwords.domains} \nEC2: ${passwords.ec2} \npem filename: ${passwords.pem}`)
                             }
                             
                             else {
@@ -218,7 +213,7 @@ function handleMessage(message) {
                             }
                         }
                         else
-                            {bot.postMessage(message.user, 'This website is not in list.');}
+                            {bot.postMessage(message.user, 'This project is not in list');}
                     } catch (error) {
                         console.log(error);
                         // bot.postMessage(message.user, 'You have no privilages.')
@@ -232,8 +227,78 @@ function handleMessage(message) {
             })
             .catch(error => {console.log(error)})
     }
+    else if(lower.includes('show details for'))
+    {
+        let slackrequest = lower.split(' ')
+        let project = slackrequest[4];
+        bot.getUserById(message.user)
+            .then((details) => {
+                let slackemail = details.profile.email
+                let member = []
+                let developer
+                
+                //getting members list through API
+                axios({
+                    method: 'post',
+                    url: 'http://localhost:5000/cms/members/name',
+                    data: {
+                        email: slackemail
+                    }
+                }).then(async (res) => {
+                   // console.log(res)
+                    try {
+                        member.push({ "id": res.data._id, "name": res.data.name, "email": res.data.email, "role": res.data.role})
+    
+                        developer = await MemberPromise(member[0].id);
+                        
+                        //console.log(developer.email);
+
+                        let individual = await individualSitePromise(project, developer);
+                        let check_email = "";
+                        if(individual != null)
+                        {
+                            //console.log(individual.member.email)
+                            if(individual.member.email.length != 0)
+                            {
+                                check_email = individual.member.email;
+
+                                if(check_email === slackemail)
+                                {
+                                    //console.log(individual)
+                                    bot.postMessage(message.user, `Project Name: ${individual.project} \nBranch: ${individual.branch} \nRepository: https://${individual.bitbucket_link} \nClient Name: ${individual.client_name} \nManager: ${individual.manager} \nDomains: https://${individual.domains} \nEC2: ${individual.ec2} \npem filename: ${individual.pem}`)
+                                }
+                                else
+                                {
+                                    //console.log("denger")
+                                    bot.postMessage(message.user, 'You have no privilages');
+                                }
+                            }
+                            else
+                            {
+                                // code
+                            }
+
+                            
+                        }
+                        else
+                        {bot.postMessage(message.user, 'This project is not in list');}
+
+                        
+                    } catch (error) {
+                        console.log(error);
+                        // bot.postMessage(message.user, 'You have no privilages.')
+                    }
+
+                })
+                    .catch((err) => {
+                        console.log(err);
+                        bot.postMessage(message.user, 'Please contact to admin')
+                    })
+            })
+            .catch(error => {console.log(error)})
+    }
     else {
-        bot.postMessage(message.user, 'Please enter in this format, eg:"show password for <website>" ')
+        bot.postMessage(message.user, 'Please enter in this format, eg:"show password for <Project name>" or "show deatils for <Project name>" ')
     }
 }
 

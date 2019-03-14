@@ -1,7 +1,6 @@
 
-
 {{!-- <a href="/cms/dashboard/password/add"><i class="fas fa-plus-circle"></i></a> --}}
-      <h2>Projects <a href="/cms/dashboard/password/add"><i class="fas fa-plus-circle"></i></a></h2>
+      <h2>Individual <a href="/cms/dashboard/individual/add"><i class="fas fa-plus-circle"></i></a></h2>
       <div class="table-responsive">
         <table class="table table-striped table-sm">
           <thead>
@@ -10,23 +9,23 @@
               <th>Project Name</th>
               <th>Client Name</th>
               <th>Bitbucket Link</th>
-              <th>Account Manager</th>
-              <th>Roles</th>
+              <th>Manager</th>
+              <th>Developer</th>
               <th>Edit</th>
               <th>Delete</th>
             </tr>
           </thead>
           <tbody id="myTable">
-            {{#each password}}
+            {{#each individual}}
               <tr>
               <td>{{math @index "+" 1}}</td>
               <td>{{project}}</td>
               <td>{{client_name}}</td>
               <td><a href="https://{{bitbucket_link}}" target="_blank">{{bitbucket_link}}</a></td>
               <td>{{manager}}</td>
-              <td>{{#objToArray role}}{{/objToArray}}</td>
-              <td><a href="/cms/dashboard/password/edit/{{id}}" class="text-success"><i class="fas fa-edit"></i></a></td>
-              <td><a href="/cms/dashboard/password/delete/{{id}}" class="text-danger"><i class="fas fa-trash-alt"></i></a></td>
+              <td>{{member.name}}</td>
+              <td><a href="/cms/dashboard/individual/edit/{{id}}" class="text-success"><i class="fas fa-edit"></i></a></td>
+              <td><a href="/cms/dashboard/individual/delete/{{id}}" class="text-danger"><i class="fas fa-trash-alt"></i></a></td>
               </tr>
             {{/each}}
           </tbody>
