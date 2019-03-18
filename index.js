@@ -11,6 +11,8 @@ const config = require('./config/database')
 const passport = require('passport')
 const cms = require('./router/cms')
 const { passwordSitePromise } = require('./controllers/passwordController');
+const { projectSidePromise } = require('./controllers/projectController');
+const { websiteSidePromise } = require('./controllers/websiteController');
 const { individualSitePromise } = require('./controllers/individualController');
 const { RolePromise } = require('./controllers/rolesController');
 const { MemberPromise } = require('./controllers/memberController');
@@ -21,7 +23,7 @@ const PORT = process.env.PORT || 5000
 const app = express()
 
 //connection code for mongodb
-mongoose.connect(config.database, { useNewUrlParser: true })
+mongoose.connect(config.database, { useCreateIndex: true, useNewUrlParser: true})
 .then(() => console.log("connected with mongodb"))
 .catch(error => console.log(error));
 
@@ -33,6 +35,12 @@ app.use(bodyParser.json())
 
 //setting public folder
 app.use("/public", express.static(path.join(__dirname, 'public')));
+
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 
 //setting up view pages
@@ -51,8 +59,15 @@ app.engine('handlebars', exphbs({
                 "%": lvalue % rvalue
             }[operator];
         },
-        objToArray: function (arr) {
+        objToRole: function (arr) {
             arr = arr.map(a => a.title);
+            // arr = arr.join(', ');
+            // arr = arr.split(',');
+            //console.log(arr)
+            return arr;
+        },
+        objToMember: function (arr) {
+            arr = arr.map(a => a.name);
             // arr = arr.join(', ');
             // arr = arr.split(',');
             //console.log(arr)
@@ -115,7 +130,7 @@ require('./config/passport')(passport)
 app.use('/cms', cms)
 
 app.use('/', (req, res) => {
-    res.send('Hello world')
+    res.send('hukum mere aaka')
 })
 
 //checking for user
@@ -155,14 +170,14 @@ function handleMessage(message) {
     let str = message.text.split('<@UGGR0QUDR>')
     let lower = str[1].toLowerCase()
     console.log(lower)
-    if (lower.includes('show password for')) {
+    if (lower.includes('show project password for')) {
         let slackrequest = lower.split(' ')
-        let project = slackrequest[4];
+        let password = slackrequest[5];
         bot.getUserById(message.user)
             .then((details) => {
                 let slackemail = details.profile.email
                 let member = []
-                let slackrole
+                let slackrole, slackmember
                 
                 //getting members list through API
                 axios({
@@ -174,38 +189,43 @@ function handleMessage(message) {
                 }).then(async (res) => {
                    // console.log(res)
                     try {
-                        member.push({ "name": res.data.name, "email": res.data.email, "role": res.data.role})
+                        member.push({ "_id": res.data._id,"name": res.data.name, "email": res.data.email, "role": res.data.role})
     
                         slackrole = await RolePromise(member[0].role)
+                        slackmember = await MemberPromise(member[0]._id)
                         //console.log(slackrole)
                         // console.log("------------")
-                        let passwords = await passwordSitePromise(project, slackrole);
-                        // console.log(passwords)
-                        if(passwords != null)
+                        let project = await projectSidePromise(password, slackrole, slackmember);
+                        console.log(project)
+                        if(project != null || slackrole.title === "admin" )
                         {
-
+                            console.log("project "+project)
                             console.log("User role " +slackrole.title)
                             let rolePas = '';
+                            let  memberPas = '';
 
-                            if(passwords.role.length != 0){
-                                rolePas = passwords.role;
+                            if(project.roles.length != 0 || project.members.length != 0){
+                                rolePas = project.roles;
+                                memberPas = project.members;
                                 console.log("_____________________")
                                 console.log(rolePas[0].title);
-                                console.log(passwords.role);
+                                console.log(memberPas[0].name)
+                                console.log(project.roles);
+                                console.log(project.members)
                                 console.log("_________________")
-                            }else if(passwords.role.length == 0){
+                            }else if(project.roles.length == 0 || project.members.length == 0){
                                 bot.postMessage(message.user, 'You have no privilages.')
                              }
                             
                             
-                            console.log("assign role " + rolePas[0].title);
+                            //console.log("assign role " + rolePas[0].title);
                             
-                            if (rolePas[0].title === slackrole.title || slackrole.title == "admin") {
+                            if (rolePas[0].title === slackrole.title || slackrole.title == "admin" || memberPas[0].name === slackmember.name) {
                                 //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
 
                                 
 
-                                bot.postMessage(message.user, `Project Name: ${passwords.project} \nBranch: ${passwords.branch} \nRepository: https://${passwords.bitbucket_link} \nClient Name: ${passwords.client_name} \nManager: ${passwords.manager} \nDomains: https://${passwords.domains} \nEC2: ${passwords.ec2} \npem filename: ${passwords.pem}`)
+                                bot.postMessage(message.user, `Project Name: ${project.name} \nBranch: ${project.branch} \nRepository: https://${project.bitbucket_link} \nClient Name: ${project.client_name} \nManager: ${project.manager} \nDomains: https://${project.domains} \nEC2: ${project.ec2} \npem filename: ${project.pem}`)
                             }
                             
                             else {
@@ -227,15 +247,15 @@ function handleMessage(message) {
             })
             .catch(error => {console.log(error)})
     }
-    else if(lower.includes('show details for'))
+    else if(lower.includes('show website password for'))
     {
         let slackrequest = lower.split(' ')
-        let project = slackrequest[4];
+        let password = slackrequest[5];
         bot.getUserById(message.user)
             .then((details) => {
                 let slackemail = details.profile.email
                 let member = []
-                let developer
+                let slackrole, slackmember
                 
                 //getting members list through API
                 axios({
@@ -249,39 +269,51 @@ function handleMessage(message) {
                     try {
                         member.push({ "id": res.data._id, "name": res.data.name, "email": res.data.email, "role": res.data.role})
     
-                        developer = await MemberPromise(member[0].id);
+                        slackmember = await MemberPromise(member[0].id);
+                        slackrole = await RolePromise(member[0].role);
                         
                         //console.log(developer.email);
 
-                        let individual = await individualSitePromise(project, developer);
-                        let check_email = "";
-                        if(individual != null)
+                        let website = await websiteSidePromise(password, slackrole, slackmember);
+                        if(website != null || slackrole.title === "admin")
                         {
-                            //console.log(individual.member.email)
-                            if(individual.member.email.length != 0)
-                            {
-                                check_email = individual.member.email;
 
-                                if(check_email === slackemail)
-                                {
-                                    //console.log(individual)
-                                    bot.postMessage(message.user, `Project Name: ${individual.project} \nBranch: ${individual.branch} \nRepository: https://${individual.bitbucket_link} \nClient Name: ${individual.client_name} \nManager: ${individual.manager} \nDomains: https://${individual.domains} \nEC2: ${individual.ec2} \npem filename: ${individual.pem}`)
-                                }
-                                else
-                                {
-                                    //console.log("denger")
-                                    bot.postMessage(message.user, 'You have no privilages');
-                                }
+                            console.log("website "+website)
+                            console.log("User role " +slackrole.title)
+                            let rolePas = '';
+                            let  memberPas = '';
+
+                            if(website.roles.length != 0 || website.members.length != 0){
+                                rolePas = website.roles;
+                                memberPas = website.members;
+                                console.log("_____________________")
+                                console.log(rolePas[0].title);
+                                console.log(memberPas[0].name)
+                                console.log(website.roles);
+                                console.log(website.members)
+                                console.log("_________________")
+                            }else if(website.roles.length == 0 || website.members.length == 0){
+                                bot.postMessage(message.user, 'You have no privilages.')
+                             }
+                            
+                            
+                            //console.log("assign role " + rolePas[0].title);
+                            
+                            if (rolePas[0].title === slackrole.title || slackrole.title == "admin" || memberPas[0].name === slackmember.name) {
+                                //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
+
+                                
+
+                                bot.postMessage(message.user, `Website Name: ${website.name} \nLogin: https://${website.login}  \nUsername: ${website.username} \nPassword: ${website.password}`)
                             }
-                            else
-                            {
+                            
+                            else {
                                 // code
                             }
-
                             
                         }
                         else
-                        {bot.postMessage(message.user, 'This project is not in list');}
+                        {bot.postMessage(message.user, 'This website is not in list');}
 
                         
                     } catch (error) {
