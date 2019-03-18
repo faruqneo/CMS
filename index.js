@@ -330,7 +330,7 @@ function handleMessage(message) {
             .catch(error => {console.log(error)})
     }
     else {
-        bot.postMessage(message.user, 'Please enter in this format, eg:"show password for <Project name>" or "show deatils for <Project name>" ')
+        bot.postMessage(message.user, 'Please enter in this format, eg:"Please enter in this format, eg:"show project password for <Project_name>" or "show website password for <Website_name>" ')
     }
 }
 
