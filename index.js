@@ -299,11 +299,9 @@ function handleMessage(message) {
                             
                             //console.log("assign role " + rolePas[0].title);
                             
-                            if (rolePas[0].title === slackrole.title || slackrole.title == "admin" || memberPas[0].name === slackmember.name) {
+                             if (rolePas[0].title === slackrole.title || slackrole.title == "admin" || memberPas[0].name === slackmember.name) {
                                 //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
-
                                 
-
                                 bot.postMessage(message.user, `Website Name: ${website.name} \nLogin: https://${website.login}  \nUsername: ${website.username} \nPassword: ${website.password}`)
                             }
                             
