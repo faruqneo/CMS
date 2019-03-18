@@ -1,6 +1,19 @@
 const Roles = require('../model/role')
 const moment = require('moment');
 
+
+// function for name
+function titleCase(str) {
+    var splitStr = str.toLowerCase().split(' ');
+    for (var i = 0; i < splitStr.length; i++) {
+        // You do not need to check if i is larger than splitStr length, as your for does that for you
+        // Assign it back to the array
+        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+    }
+    // Directly return the joined string
+    return splitStr.join(' ').trim(); 
+ }
+
 //adding new roles form page
 exports.addForm = (req, res) => {
     res.render('add_roles')
@@ -22,7 +35,7 @@ exports.addNew = (req, res) => {
     else
     {
         let roles = new Roles();
-        roles.title = req.body.title;
+        roles.title = titleCase(req.body.title);
         roles.description = req.body.description;
         //res.send(roles)
         roles.save(function(err){

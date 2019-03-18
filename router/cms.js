@@ -5,7 +5,9 @@ const rolesController = require('../controllers/rolesController')
 const membersController = require('../controllers/memberController')
 const passwordController = require('../controllers/passwordController')
 const individualController = require('../controllers/individualController')
-const signupController = require('../controllers/signupController')
+const projectController = require('../controllers/projectController')
+const websiteController = require('../controllers/websiteController')
+//const signupController = require('../controllers/signupController')
 const Switch1 = require('../model/switch')
 const router = express.Router()
 
@@ -57,39 +59,50 @@ router.post('/login', authController.login)
 
 
 //Memeber routers
-router.get('/dashboard/:page', authController.ensureAthenticated, membersController.memberList)
-router.get('/dashboard/members/add', authController.ensureAthenticated, membersController.addMember)
-router.post('/dashboard/members/new_add', authController.ensureAthenticated, membersController.addNew)
-router.get('/dashboard/members/edit/:id', authController.ensureAthenticated, membersController.membersView)
-router.post('/dashboard/update/members/:id', authController.ensureAthenticated, membersController.membersUpdate)
-router.get('/dashboard/memebers/delete/:id', authController.ensureAthenticated, membersController.membersDelete)
-router.post('/members/name',authController.ensurePermission, membersController.userName)
+ router.get('/dashboard/:page', authController.ensureAthenticated, membersController.memberList)
+ router.get('/dashboard/members/add', authController.ensureAthenticated, membersController.addMember)
+ router.post('/dashboard/members/new_add', authController.ensureAthenticated, membersController.addNew)
+ router.get('/dashboard/members/edit/:id', authController.ensureAthenticated, membersController.membersView)
+ router.post('/dashboard/update/members/:id', authController.ensureAthenticated, membersController.membersUpdate)
+ router.get('/dashboard/memebers/delete/:id', authController.ensureAthenticated, membersController.membersDelete)
+ router.post('/members/name',authController.ensurePermission, membersController.userName)
 
-//Password routers
-router.get('/dashboard/passwords/list', authController.ensureAthenticated, passwordController.passwordList)
-router.get('/dashboard/password/add', authController.ensureAthenticated, passwordController.addPassword)
-router.post('/dashboard/passwords/new_add', authController.ensureAthenticated, passwordController.addNew)
-router.get('/dashboard/password/edit/:id', authController.ensureAthenticated, passwordController.passwordsView)
-router.post('/dashboard/update/passwords/:id', authController.ensureAthenticated, passwordController.passwordsUpdate)
-router.get('/dashboard/password/delete/:id', authController.ensureAthenticated, passwordController.passwordsDelete)
+// //Password routers
+ router.get('/dashboard/credentials/list', authController.ensureAthenticated, passwordController.passwordList)
+ router.get('/dashboard/credentials/add',authController.ensureAthenticated, passwordController.addPassword)
+//  router.post('/dashboard/passwords/new_add', authController.ensureAthenticated, passwordController.addNew)
+//  router.get('/dashboard/password/edit/:id', authController.ensureAthenticated, passwordController.passwordsView)
+//  router.post('/dashboard/update/passwords/:id', authController.ensureAthenticated, passwordController.passwordsUpdate)
+//  router.get('/dashboard/password/delete/:id', authController.ensureAthenticated, passwordController.passwordsDelete)
 
-//Individual routers
-router.get('/dashboard/individual/list', authController.ensureAthenticated, individualController.individualList)
-router.get('/dashboard/individual/add', authController.ensureAthenticated, individualController.addIndividual)
-router.post('/dashboard/individual/new_add', authController.ensureAthenticated, individualController.addNew)
-router.get('/dashboard/individual/edit/:id', authController.ensureAthenticated, individualController.individualsView)
-router.post('/dashboard/update/individuals/:id', authController.ensureAthenticated, individualController.individualsUpdate)
-router.get('/dashboard/individual/delete/:id', authController.ensureAthenticated, individualController.individualsDelete)
+// Project & Website routers
+ router.post('/dashboard/project/new_add', authController.ensureAthenticated, projectController.addNew)
+ router.post('/dashboard/website/new_add', authController.ensureAthenticated, websiteController.addNew)
+ router.get('/dashboard/project/edit/:id', authController.ensureAthenticated, projectController.projectsView)
+ router.post('/dashboard/update/project/:id', authController.ensureAthenticated, projectController.projectsUpdate)
+ router.get('/dashboard/website/edit/:id', authController.ensureAthenticated, websiteController.websitesView)
+ router.post('/dashboard/update/website/:id', authController.ensureAthenticated, websiteController.websitesUpdate)
+ router.get('/dashboard/project/delete/:id', authController.ensureAthenticated, projectController.projectsDelete)
+ router.get('/dashboard/website/delete/:id', authController.ensureAthenticated, websiteController.websitesDelete)
 
-//Role routers
-router.get('/dashboard/roles/list', authController.ensureAthenticated, rolesController.rolesList)
-router.get('/dashboard/roles/add', authController.ensureAthenticated, rolesController.addForm)
-router.post('/dashboard/roles/new_add', authController.ensureAthenticated, rolesController.addNew)
-router.get('/dashboard/roles/edit/:id', authController.ensureAthenticated, rolesController.rolesView)
-router.post('/dashboard/update/roles/:id', authController.ensureAthenticated, rolesController.rolesUpdate)
-router.get('/dashboard/roles/delete/:id', authController.ensureAthenticated, rolesController.rolesDelete)
 
-//logout router
-router.get('/logout', authController.ensureAthenticated, authController.logout)
+// //Individual routers
+ router.get('/dashboard/individual/list', authController.ensureAthenticated, individualController.individualList)
+ router.get('/dashboard/individual/add', authController.ensureAthenticated, individualController.addIndividual)
+ router.post('/dashboard/individual/new_add', authController.ensureAthenticated, individualController.addNew)
+ router.get('/dashboard/individual/edit/:id', authController.ensureAthenticated, individualController.individualsView)
+ router.post('/dashboard/update/individuals/:id', authController.ensureAthenticated, individualController.individualsUpdate)
+ router.get('/dashboard/individual/delete/:id', authController.ensureAthenticated, individualController.individualsDelete)
 
-module.exports = router
+// //Role routers
+ router.get('/dashboard/roles/list', authController.ensureAthenticated, rolesController.rolesList)
+ router.get('/dashboard/roles/add', authController.ensureAthenticated, rolesController.addForm)
+ router.post('/dashboard/roles/new_add', authController.ensureAthenticated, rolesController.addNew)
+ router.get('/dashboard/roles/edit/:id', authController.ensureAthenticated, rolesController.rolesView)
+ router.post('/dashboard/update/roles/:id', authController.ensureAthenticated, rolesController.rolesUpdate)
+ router.get('/dashboard/roles/delete/:id', authController.ensureAthenticated, rolesController.rolesDelete)
+
+// //logout router
+ router.get('/logout', authController.ensureAthenticated, authController.logout)
+
+module.exports = router;

@@ -1,7 +1,7 @@
 const passport = require('passport')
 
 exports.login = (req, res, next) => {
-    //console.log(request.session)
+        console.log("login")
         passport.authenticate('local',{
         successRedirect: '/cms/dashboard/1',
         failureRedirect: '/cms',
@@ -10,6 +10,7 @@ exports.login = (req, res, next) => {
 };
 
 exports.logout = (req, res) => {
+    console.log("logout")
     req.logout();
 	res.redirect(`/cms`);
 };

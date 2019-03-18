@@ -1,9 +1,9 @@
-const Password = require('../model/password');
-const Project  = require('../model/project');
-const Website = require('../model/website');
+const Project = require('../model/project');
 const Role = require('../model/role');
 const Member = require('../model/member');
-const moment = require('moment');   
+const moment = require('moment');  
+
+
 
 // function for name
 function titleCase(str) {
@@ -17,59 +17,14 @@ function titleCase(str) {
     return splitStr.join(' ').trim(); 
  }
 
-//Load password list
-exports.passwordList = async (req, res) => {
-    try {
-        let project = await Project.find({}).populate({ path: 'roles', select: 'title -_id' }).populate({ path: 'members', select: 'name -_id' }).limit(10);
-        let website =  await Website.find({}).populate({ path: 'roles', select: 'title -_id' }).populate({ path: 'members', select: 'name -_id' }).limit(10);
-        //console.log(req.query)
-        res.render('passwords', {
-            tab: req.query.tab,
-            project,
-            website
-        });
-    } catch (error) {
-        console.log(error)
-    }
 
-}
 
-exports.addPassword =async (req, res) => {
-    let members = await Member.find({});
-    let roles = await Role.find({});
-   // roles = roles.concat(memberArray);
-    res.render('add_passwords', {
-        encodedRole : encodeURIComponent(JSON.stringify(roles)),
-        encodeMember : encodeURIComponent(JSON.stringify(members))
-    });
-}
-
-// //adding new passwords
+//adding new passwords
 exports.addNew = async (req, res) => {
-    req.checkBody('name', 'Project Name is required').notEmpty();
-//    req.checkBody('branch', 'Branch is required').notEmpty();
-    req.checkBody('bitbucket_link', 'Bitbucket Link is required').notEmpty();
-    req.checkBody('client_name', 'Client Name is required').notEmpty();
-    req.checkBody('manager', 'Manager Name is required').notEmpty();
-    req.checkBody('role', 'Role is required').notEmpty();
-    req.checkBody('domains', 'Domain is required').notEmpty();
-    req.checkBody('ec2', 'EC2 is required').notEmpty();
-
-    let errors = req.validationErrors();
-
-    if(errors)
-    {
-        let roles = await Role.find({});
-        res.render('add_passwords',{
-            errors,
-            roles
-        })  
-    }
-    else
-    {
+    //console.log(req.body)
         let project = new Project();
-        let { name, branch, bitbucket_link, client_name, manager, role, member, domains, ec2, pem } = req.body;
-        project.name = name;
+        let { pname, branch, bitbucket_link, client_name, manager, role, member, domains, ec2, pem } = req.body;
+        project.name = pname;
         console.log(branch)
         if(branch != null && branch != '')
         {
@@ -92,7 +47,7 @@ exports.addNew = async (req, res) => {
         if(members.length) {
             // find all role _id in db
             try {
-                let db_members = await Member.find({name: {$in: members}});
+                let db_members = await Member.find({email: {$in: members}});
                 //console.log(db_roles)
                 if(db_members) {
                     for(let db_member of db_members) {
@@ -105,8 +60,8 @@ exports.addNew = async (req, res) => {
             }
 
         }
-        project.member = member_ids;
-
+        project.members = member_ids;
+       
         let roles = role.split(',');
         let role_ids = [];
         if(roles.length) {
@@ -125,10 +80,17 @@ exports.addNew = async (req, res) => {
             }
 
         }
-        project.role = role_ids;
+        project.roles = role_ids;
 
         project.save()
-        .then(() => res.redirect('/cms/dashboard/passwords/list'))
+        .then(() => {
+            console.log("--------------");
+            console.log("project");
+            console.log("---------------");
+            console.log(`${pname} is added.`);
+            console.log("---------");
+            res.redirect('/cms/success');
+        })
         .catch((errors) => {
             res.render('add_passwords',{
                 encodedJson : encodeURIComponent(JSON.stringify(roles)),
@@ -136,28 +98,47 @@ exports.addNew = async (req, res) => {
                 error: errors               
             })
         });
-    }
+    
 }
 
-//detailes view for password
-exports.passwordsView = async (req, res) => {
+
+//project delete 
+exports.projectsDelete = (req, res) => {
+    let id = {_id:req.params.id}
+    Project.deleteOne(id, function(err){
+        if(err)
+        {
+            console.log(err)
+        }
+        else
+        {
+            res.redirect('/cms/dashboard/credentials/list?tab=project')
+        }
+    })
+}
+
+
+//detailes view for project
+exports.projectsView = async (req, res) => {
     try {
-    let passwords = await Password.findById(req.params.id).populate({ path: 'role', select: 'title -_id' });
+        let project =  await Project.findById(req.params.id).populate({ path: 'roles', select: 'title -_id' }).populate({ path: 'members', select: 'name -_id' });
     /* Password Decryption */
 
-    let roles = await Role.find({});
-    res.render('passwordsView',{
-        passwords,
-        encodedJson : encodeURIComponent(JSON.stringify(roles)),
-        roles
-    })
+    let role = await Role.find({});
+    let member = await Member.find({});
+    res.render('uc');
+    // res.render('projectsView',{
+    //     member,
+    //     project,
+    //     role
+    // })
     } catch (error) {
-       throw error 
+       console.log(error)
     }
 }
 
-//update for passwords
-exports.passwordsUpdate = async (req, res) => {
+//update for projects
+exports.projectsUpdate = async (req, res) => {
     req.checkBody('project', 'project is required').notEmpty();
     req.checkBody('branch', 'branch is required').notEmpty();
     req.checkBody('bitbucket_link', 'bitbucket_link is required').notEmpty();
@@ -172,17 +153,19 @@ exports.passwordsUpdate = async (req, res) => {
     
     if(errors)
     {
-        res.render('passwordsView',{
+        res.render('projectsView',{
             errors
         }); 
     }
     else
     {
-        let passwords = req.body;
-        passwords.updatedAT = moment().format('MMMM Do YYYY, h:mm:ss a');
+        let projects = req.body;
+        projects.updatedAT = moment().format('MMMM Do YYYY, h:mm:ss a');
         // passwords.password = CryptoJS.AES.encrypt(passwords.password, 'secret key 123');
         let id = {_id:req.params.id}
-        let roles = passwords.role.split(',');
+        let roles = projects.roles.split(',');
+        let members = projects.members.split(',');
+        let member_ids = [];
         let role_ids = [];
         //console.log(roles)
         if(roles.length){
@@ -200,55 +183,81 @@ exports.passwordsUpdate = async (req, res) => {
                 console.log(error);
             }
 
-        }           
-        passwords.role = role_ids
-        Password.updateOne(id, passwords,function(err){
+        } 
+        if(members.length){
+            // find all role _id in db
+            try {
+               let db_members = await Member.find({email: {$in: members}});
+               //console.log(db_roles)
+               if(db_members) {
+                   for(let db_member of db_members) {
+                    member_ids.push(db_member._id);
+                   }
+                   //console.log(role_ids)
+               }
+           } catch (error) {
+               console.log(error);
+           }
+
+       }          
+        projects.roles = role_ids
+        projects.members = member_ids
+        projects.updateOne(id, projects,function(err){
             if(err)
             {
                 console.log("err")
             }
             else
             {
-                req.flash('success', 'Password Update')
-                res.redirect('/cms/dashboard/passwords/list')
+                res.redirect('/cms/dashboard/credentials/list')
             }
         })
     }
 }
 
-//password delete 
-exports.passwordsDelete = (req, res) => {
-    let id = {_id:req.params.id}
-    Password.deleteOne(id, function(err){
-        if(err)
-        {
-            console.log(err)
-        }
-        else
-        {
-            req.flash('success', 'Password Deleted')
-            res.redirect('/cms/dashboard/passwords/list')
-        }
-    })
-}
 
-// //Passwords list api for bot 
-exports.passwordSite = (req, res) => {
-    let password = res.body
-    //console.log("test")
-    Password.find(password,function(err, password){
-        res.send(password)
-    });
-}
-
-
-exports.passwordSitePromise = (project, slackrole) => {
-    //  console.log("slackrole"+slackrole)
-    return Password.findOne({project}).populate({
-        path:'role',
-        match: { _id: { $eq: slackrole._id }},
-        // $match: { _id: slackrole._id },
+exports.projectSidePromise = (item, slackrole, slackmember) => {
+   // console.log("slackrole "+slackrole+" \nslackmember"+slackmember)
+    if(slackrole != null && slackmember != null)
+   { 
+       console.log("condition 1")
+    return Project.findOne({name: item}).populate({
+        path:'roles',
+    //    match: { _id: { $eq: slackrole._id }},
         select: 'title -_id'
+    }).populate({
+        path:'members',
+    //    $match: { _id: slackmember._id },
+        select: 'name -_id'       
     });
-}
+   }
+   
+    else if(slackrole != null && slackmember == null)
+    {
+        console.log("condition 2")
+       return Project.findOne({name: item}).populate({
+        path:'roles',
+    //    match: { _id: { $eq: slackrole._id }},
+        select: 'title -_id'
+    }).populate({
+        path:'members',
+    //    $match: { _id: slackmember._id },
+        select: 'name -_id'       
+    });
+    }
 
+    else
+    {
+        console.log("else condition")
+      return Project.findOne({name: item}).populate({
+        path:'roles',
+     //   match: { _id: { $eq: slackrole._id }},
+        select: 'title -_id'
+    }).populate({
+        path:'members',
+    //    $match: { _id: slackmember._id },
+        select: 'name -_id'       
+    });
+    }
+
+}
