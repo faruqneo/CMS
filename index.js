@@ -197,7 +197,7 @@ function handleMessage(message) {
                         // console.log("------------")
                         let project = await projectSidePromise(password, slackrole, slackmember);
                         console.log(project)
-                        if(project != null || slackrole.title === "admin" )
+                        if(project != null || slackrole.title === "Admin" )
                         {
                             console.log("project "+project)
                             console.log("User role " +slackrole.title)
@@ -220,10 +220,8 @@ function handleMessage(message) {
                             
                             //console.log("assign role " + rolePas[0].title);
                             
-                            if (rolePas[0].title === slackrole.title || slackrole.title == "admin" || memberPas[0].name === slackmember.name) {
+                            if (rolePas[0].title === slackrole.title || slackrole.title == "Admin" || memberPas[0].name === slackmember.name) {
                                 //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
-
-                                
 
                                 bot.postMessage(message.user, `Project Name: ${project.name} \nBranch: ${project.branch} \nRepository: https://${project.bitbucket_link} \nClient Name: ${project.client_name} \nManager: ${project.manager} \nDomains: https://${project.domains} \nEC2: ${project.ec2} \npem filename: ${project.pem}`)
                             }
@@ -242,7 +240,7 @@ function handleMessage(message) {
                 })
                     .catch((err) => {
                         console.log(err);
-                        bot.postMessage(message.user, 'Please contact to admin.')
+                        bot.postMessage(message.user, 'Please contact to Admin.')
                     })
             })
             .catch(error => {console.log(error)})
@@ -275,7 +273,7 @@ function handleMessage(message) {
                         //console.log(developer.email);
 
                         let website = await websiteSidePromise(password, slackrole, slackmember);
-                        if(website != null || slackrole.title === "admin")
+                        if(website != null || slackrole.title === "Admin")
                         {
 
                             console.log("website "+website)
@@ -299,7 +297,7 @@ function handleMessage(message) {
                             
                             //console.log("assign role " + rolePas[0].title);
                             
-                             if (rolePas[0].title === slackrole.title || slackrole.title == "admin" || memberPas[0].name === slackmember.name) {
+                             if (rolePas[0].title === slackrole.title || slackrole.title == "Admin" || memberPas[0].name === slackmember.name) {
                                 //console.log(passwords.login+" "+passwords.username+" "+passwords.password)
                                 
                                 bot.postMessage(message.user, `Website Name: ${website.name} \nLogin: https://${website.login}  \nUsername: ${website.username} \nPassword: ${website.password}`)
@@ -322,7 +320,7 @@ function handleMessage(message) {
                 })
                     .catch((err) => {
                         console.log(err);
-                        bot.postMessage(message.user, 'Please contact to admin')
+                        bot.postMessage(message.user, 'Please contact to Admin')
                     })
             })
             .catch(error => {console.log(error)})
